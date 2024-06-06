@@ -11,7 +11,7 @@ app.mount("/ui", StaticFiles(directory="ui"), name="ui")
 app.include_router(easyrsa.router)
 
 
-@app.get("/")
+@app.get("/api/v1")
 async def root():
     return {"message": "Hello World"}
 

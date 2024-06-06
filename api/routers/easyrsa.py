@@ -2,7 +2,8 @@ from fastapi import APIRouter
 
 
 router = APIRouter(
-    tags=["easyrsa"]
+    tags=["easyrsa"],
+    prefix="/api/v1"
 )
 
 
