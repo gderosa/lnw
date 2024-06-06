@@ -1,4 +1,16 @@
+from typing import List
+
 from fastapi import APIRouter
+from pydantic import BaseModel
+
+
+class IPData(BaseModel):
+    addresses: List[str]
+
+class NetworkInterface(BaseModel):
+    name: str
+    ip: IPData
+
 
 
 network_interfaces = [
@@ -30,11 +42,17 @@ network_interfaces = [
 
 
 router = APIRouter(
-    tags=["network", "network/interfaces"],
+    tags=["network/interfaces"],
     prefix="/api/v1"
 )
 
 
 @router.get("/network/interfaces")
 async def read_netifs():
+    return network_interfaces
+
+@router.put("/network/interfaces")
+async def replace_netifs(netifs: List[NetworkInterface]):
+    global network_interfaces
+    network_interfaces = netifs
     return network_interfaces

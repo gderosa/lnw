@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="../style.css">
     </head>
     <body>
-        <h1>EasyRSA</h1>
+        <h1>Network Interfaces</h1>
         <table x-data="{netifs: []}" x-init="fetch('/api/v1/network/interfaces').then(r => r.json()).then(ary => netifs = ary)">
             <thead>
                 <tr>
