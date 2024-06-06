@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/alpinejs" defer></script>
+        <link rel="stylesheet" href="../style.css">
+    </head>
+    <body>
+        <h1>EasyRSA</h1>
+        <table x-data="{netifs: []}" x-init="fetch('/api/v1/network/interfaces').then(r => r.json()).then(ary => netifs = ary)">
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>addresses</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="netif in netifs">
+                    <tr>
+                        <td x-text="netif.name"></td>
+                        <td>
+                            <ol>
+                                <template x-for="addr in netif.ip.addresses">
+                                    <li x-text="addr"></li>
+                                </template>
+                            </ol>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </body>
+</html>
+

@@ -1,15 +1,7 @@
 from fastapi import APIRouter
 
 
-router = APIRouter(
-    tags=["network", "network/interfaces"],
-    prefix="/api/v1"
-)
-
-
-@router.get("/network/interfaces")
-async def read_netifs():
-    return [
+network_interfaces = [
         {
             "name": "lo",
             "ip": {
@@ -27,7 +19,7 @@ async def read_netifs():
             },
         },
         {
-            "name": "lo",
+            "name": "eth1",
             "ip": {
                 "addresses": [
                     "192.168.1.1", "fe80::1111"
@@ -35,3 +27,14 @@ async def read_netifs():
             }
         }
     ]
+
+
+router = APIRouter(
+    tags=["network", "network/interfaces"],
+    prefix="/api/v1"
+)
+
+
+@router.get("/network/interfaces")
+async def read_netifs():
+    return network_interfaces
