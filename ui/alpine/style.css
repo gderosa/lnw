@@ -8,6 +8,7 @@ input[type="text"] {
 }
 
 input[type="text"][readonly] {
-    background: #ddd;
-    color: initial;
+    color: #555;
+    font-family: sans-serif;
+    font-weight: bold;
 }
