@@ -1,26 +1,25 @@
 <html>
+    <head>
+        <script src="https://unpkg.com/alpinejs" defer></script>
+    </head>
     <body>
         <h1>EasyRSA</h1>
+        <table x-data="{pkis: []}" x-init="fetch('/api/v1/easyrsa/pkis').then(res => res.json()).then(data => pkis = data)">
+            <thead>
+                <tr>
+                    <th>PKI name</th>
+                    <th>Other</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="pki in pkis">
+                    <tr>
+                        <td x-text="pki.pkiname"></td>
+                        <td>other info</td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
     </body>
-    <table>
-        <thead>
-            <tr>
-                <th>PKI name</th>
-                <th>Other</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
 </html>
 
-<script type="text/javascript">
-fetch('/api/v1/easyrsa/pkis')
-.then(function(response) {
-    return response.json();
-})
-.then(function(pkis) {
-    console.log(pkis);
-})
-</script>
