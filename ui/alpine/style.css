@@ -1,3 +1,13 @@
 table tr td {
     vertical-align: top;
 }
+
+input[type="text"] {
+    color: blue;
+    font-family: monospace;
+}
+
+input[type="text"][readonly] {
+    background: #ddd;
+    color: initial;
+}
