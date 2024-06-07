@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1>Network Interfaces</h1>
-        <form id="netifs_form" @submit.prevent="console.log(netifs)" x-data="{netifs: []}" x-init="fetch('/api/v1/network/interfaces').then(r => r.json()).then(ary => netifs = ary)">
+        <form id="netifs_form" @submit.prevent="putNetIfs(netifs)" x-data="{netifs: []}" x-init="fetch('/api/v1/network/interfaces').then(r => r.json()).then(ary => netifs = ary)">
             <table>
                 <thead>
                     <tr>
@@ -14,12 +14,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!--
+                        We do not `x-model` `_netif` and `_addr` (conventionally _underscored, as never used)
+                        because we wouldn't write into `netifs` otherwise.
+                        So we use nested loop indices `i`, `j` and explicitly `x-model="netifs[i].ip.addresses[j]"`
+                    -->
                     <template x-for="(_netif, i) in netifs">
                         <tr>
                             <td><input type="text" readonly x-model="netifs[i].name"></input></td>
                             <td>
-                                <template x-for="(_addr, j) in netifs[i].ip.addresses">
-                                    <input type="text"x-model="netifs[i].ip.addresses[j]" >
+                                <template x-for="(_addr, j) in  netifs[i].ip.addresses">
+                                    <input type="text" x-model="netifs[i].ip.addresses[j]">
                                     </input>
                                 </template>
                             </td>
@@ -29,6 +34,21 @@
             </table>
             <button type="submit">Update!</button>
         <form>
+
+        <script type="text/javascript">
+            function putNetIfs(netifs) {
+                let body = JSON.stringify(netifs);
+                console.log(body);
+                fetch('/api/v1/network/interfaces', {
+                    method: 'put',
+                    body: body,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
+        </script>
+
     </body>
 </html>
 
