@@ -1,2 +1,2 @@
 # lnw
-Linux Network Web API and UI
+Linux Network Web (API and UI).
