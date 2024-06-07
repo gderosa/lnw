@@ -4,8 +4,12 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 
+class IPAddress(BaseModel):
+    addr: str
+    prefix: int
+
 class IPData(BaseModel):
-    addresses: List[str]
+    addresses: List[IPAddress]
 
 class NetworkInterface(BaseModel):
     name: str
@@ -18,7 +22,8 @@ network_interfaces = [
             "name": "lo",
             "ip": {
                 "addresses": [
-                    "127.0.0.1", "::1"
+                    {"addr": "127.0.0.1", "prefix": 8},
+                    {"addr": "::1", "prefix": 128}
                 ]
             }
         },
@@ -26,7 +31,8 @@ network_interfaces = [
             "name": "eth0",
             "ip": {
                 "addresses": [
-                    "201.202.203.204", "2001::2008"
+                    {"addr": "201.202.203.204", "prefix": 24},
+                    {"addr": "2001::2008", "prefix": 96}
                 ]
             },
         },
@@ -34,7 +40,8 @@ network_interfaces = [
             "name": "eth1",
             "ip": {
                 "addresses": [
-                    "192.168.1.1", "fe80::1111"
+                    {"addr": "192.168.1.1", "prefix": 24},
+                    {"addr": "fe80::1111", "prefix": 64}
                 ]
             }
         }
