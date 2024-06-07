@@ -1,4 +1,7 @@
 <html>
+    <!--
+        TODO: use axios instead of fetch() ?
+    -->
     <head>
         <script src="https://unpkg.com/alpinejs" defer></script>
         <link rel="stylesheet" href="../style.css">
@@ -15,13 +18,13 @@
                 </thead>
                 <tbody>
                     <!--
-                        We do not `x-model` `_netif` and `_addr` (conventionally _underscored, as never used)
+                        We do not `x-model` `_netif` and `_addr` (conventionally _underscored here, as never used)
                         because we wouldn't write into `netifs` otherwise.
                         So we use nested loop indices `i`, `j` and explicitly `x-model="netifs[i].ip.addresses[j]"`
                     -->
                     <template x-for="(_netif, i) in netifs">
                         <tr>
-                            <td><input type="text" readonly x-model="netifs[i].name"></input></td>
+                            <td><input type="text" disabled x-model="netifs[i].name"></input></td>
                             <td>
                                 <template x-for="(_addr, j) in  netifs[i].ip.addresses">
                                     <input type="text" x-model="netifs[i].ip.addresses[j]">
@@ -36,10 +39,10 @@
         <form>
 
         <script type="text/javascript">
-            function putNetIfs(netifs) {
+            async function putNetIfs(netifs) {
                 let body = JSON.stringify(netifs);
                 console.log(body);
-                fetch('/api/v1/network/interfaces', {
+                await fetch('/api/v1/network/interfaces', {
                     method: 'put',
                     body: body,
                     headers: {
