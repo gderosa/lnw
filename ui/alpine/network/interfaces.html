@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1>Network Interfaces</h1>
-        <form id="netifs_form" x-data="{netifs: []}" x-init="fetch('/api/v1/network/interfaces').then(r => r.json()).then(ary => netifs = ary)">
+        <form id="netifs_form" @submit.prevent="console.log(netifs)" x-data="{netifs: []}" x-init="fetch('/api/v1/network/interfaces').then(r => r.json()).then(ary => netifs = ary)">
             <table>
                 <thead>
                     <tr>
@@ -14,19 +14,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template x-for="(netif, i) in netifs">
+                    <template x-for="(_netif, i) in netifs">
                         <tr>
-                            <td><input x-bind:name="'netifs[' + i + '].name'" type="text" readonly x-model="netif.name"></input></td>
+                            <td><input type="text" readonly x-model="netifs[i].name"></input></td>
                             <td>
-                                <template x-for="(addr, j) in netif.ip.addresses">
-                                    <input x-bind:name="'netifs[' + i + '].ip.addresses[' + j + ']'" type="text" x-model="addr"></input>
+                                <template x-for="(_addr, j) in netifs[i].ip.addresses">
+                                    <input type="text"x-model="netifs[i].ip.addresses[j]" >
+                                    </input>
                                 </template>
                             </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
-            <button>Update!</button>
+            <button type="submit">Update!</button>
         <form>
     </body>
 </html>
