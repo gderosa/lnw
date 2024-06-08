@@ -24,15 +24,23 @@
                     -->
                     <template x-for="(_netif, i) in netifs">
                         <tr>
-                            <th scope="row"><input type="text" readonly x-model="netifs[i].name"></input></th>
+                            <th class="sysname" scope="row" x-text="netifs[i].name"></th>
                             <td>
                                 <template x-for="(_addr, j) in  netifs[i].ip.addresses">
-                                    <div>
-                                        <input type="text" x-model="netifs[i].ip.addresses[j].addr"></input>
+                                    <span>
+                                        <input type="text" x-model="netifs[i].ip.addresses[j].addr" size="30">
                                         /
-                                        <input type="text" x-model="netifs[i].ip.addresses[j].prefix" size="3"></input>
-                                </div>
+                                        <input type="text" x-model="netifs[i].ip.addresses[j].prefix" size="3">
+                                        <br x-show="j < netifs[i].ip.addresses.length - 1">
+                                    </span>
                                 </template>
+                                <button
+                                    class   = "plusminus"
+                                    type    = "button"
+                                    @click  = "netifs[i].ip.addresses.push({addr: '', prefix: null})"
+                                >
+                                    +
+                                </button>
                             </td>
                         </tr>
                     </template>

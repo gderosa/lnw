@@ -5,21 +5,37 @@ input[type="text"] {
     border: 1px solid #aaa;
 }
 
-input[type="text"][readonly] {
-    color: #555;
-    font-family: sans-serif;
+button.plusminus {
+    background: #f8f8f8;
+    color:blue;
     font-weight: bold;
-}
-
-th input[type="text"] {
-    border-style: dotted;
-    border-top: none;
+    border-radius: 0.8ex;
+    border-color: grey;
 }
 
 tr {
     line-height: 1.333em;
 }
 
+th[scope="row"]{
+    padding: 1em;
+}
+
+td {
+    padding: 0.5em;
+}
+
+.sysname {
+    font-family: monospace;
+}
+
 form table {
     margin-bottom: 1em;
+}
+
+table tbody tr:nth-child(odd) {
+    background: #e8e8e8;
+}
+table tbody tr:nth-child(even) {
+    background: #f0f8ff;
 }

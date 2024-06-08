@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 class IPAddress(BaseModel):
     addr: str
-    prefix: int
+    prefix: int | None
 
 class IPData(BaseModel):
     addresses: List[IPAddress]
@@ -41,37 +41,7 @@ def get_network_interfaces():
 
 network_interfaces = get_network_interfaces()
 
-"""
-    [
-        {
-            "name": "lo",
-            "ip": {
-                "addresses": [
-                    {"addr": "127.0.0.1", "prefix": 8},
-                    {"addr": "::1", "prefix": 128}
-                ]
-            }
-        },
-        {
-            "name": "eth0",
-            "ip": {
-                "addresses": [
-                    {"addr": "201.202.203.204", "prefix": 24},
-                    {"addr": "2001::2008", "prefix": 96}
-                ]
-            },
-        },
-        {
-            "name": "eth1",
-            "ip": {
-                "addresses": [
-                    {"addr": "192.168.1.1", "prefix": 24},
-                    {"addr": "fe80::1111", "prefix": 64}
-                ]
-            }
-        }
-    ]
-"""
+
 
 router = APIRouter(
     tags=["network/interfaces"],
