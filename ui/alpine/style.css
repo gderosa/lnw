@@ -16,7 +16,6 @@ button.plusminus {
     border-color: grey;
     margin-top: none;
     margin-bottom: none;
-    height: 50%;
 }
 
 button.plusminus[disabled] {
@@ -30,6 +29,10 @@ tr {
 
 th[scope="row"]{
     padding: 1em;
+}
+
+td {
+    padding: 0 1ex 0 1ex;
 }
 
 .sysname {
