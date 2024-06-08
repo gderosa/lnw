@@ -1,5 +1,6 @@
 import subprocess
 import json
+import logging
 
 from typing import List
 
@@ -7,6 +8,13 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 
+# Globals
+
+# TODO: this breaks if a different server is used!
+logger = logging.getLogger('uvicorn')
+
+
+# Models
 
 class IPAddress(BaseModel):
     addr: str
@@ -20,6 +28,7 @@ class NetworkInterface(BaseModel):
     ip: IPData
 
 
+# Web app <-> System Networking
 
 def get_network_interfaces() -> NetworkInterface:
     iproute2_data = json.loads(subprocess.check_output(['ip', '--json', 'address', 'show']))
@@ -45,14 +54,21 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
         netif = [ni for ni in netifs if ni.name == old_netif.name][0]
         for old_address in old_netif.ip.addresses:
             if old_address not in netif.ip.addresses:
-                print(f"ip remove {old_address} from {netif.name}")
+                logger.info(f"ip remove {old_address} from {netif.name}")
+                subprocess.run(['sudo', 'ip', 'address', 'delete', f'{old_address.addr}/{old_address.prefix}', 'dev', netif.name])
     for netif in netifs:
         old_netif = [oni for oni in old_netifs if oni.name == netif.name][0]
         for address in netif.ip.addresses:
             if address not in old_netif.ip.addresses:
-                print(f"ip add {address} to {netif.name}")
+                address_txt = address.addr
+                if address.prefix:
+                    address_txt = address_txt + '/' + str(address.prefix)
+                logger.info(f"ip add {address_txt} to {netif.name}")
+                subprocess.run(['sudo', 'ip', 'address', 'add', f'{address_txt}', 'dev', netif.name])
 
 
+
+#URL routes
 
 router = APIRouter(
     tags=["network/interfaces"],
