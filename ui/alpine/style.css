@@ -11,18 +11,22 @@ button.plusminus {
     font-weight: bold;
     border-radius: 0.8ex;
     border-color: grey;
+    margin-top: none;
+    margin-bottom: none;
+    height: 50%;
+}
+
+button.plusminus[disabled] {
+    color: grey;
+    border-style: solid;
 }
 
 tr {
-    line-height: 1.333em;
+    line-height: 1.4em;
 }
 
 th[scope="row"]{
     padding: 1em;
-}
-
-td {
-    padding: 0.5em;
 }
 
 .sysname {
@@ -34,7 +38,7 @@ form table {
 }
 
 table tbody tr:nth-child(odd) {
-    background: #e8e8e8;
+    background: #c2deda83;
 }
 table tbody tr:nth-child(even) {
     background: #f0f8ff;

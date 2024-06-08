@@ -1,8 +1,6 @@
 <html>
-    <!--
-        TODO: use axios instead of fetch() ?
-    -->
     <head>
+        <script src="https://unpkg.com/underscore@stable/underscore-umd-min.js"></script>
         <script src="https://unpkg.com/alpinejs" defer></script>
         <link rel="stylesheet" href="../style.css">
     </head>
@@ -35,9 +33,10 @@
                                     </span>
                                 </template>
                                 <button
-                                    class   = "plusminus"
-                                    type    = "button"
-                                    @click  = "netifs[i].ip.addresses.push({addr: '', prefix: null})"
+                                    :disabled   = "netifs[i].ip.addresses.length > 0 && !_.last(netifs[i].ip.addresses).addr.match(/\w/)"
+                                    class       = "plusminus"
+                                    type        = "button"
+                                    @click      = "netifs[i].ip.addresses.push({addr: '', prefix: null})"
                                 >
                                     +
                                 </button>
@@ -52,7 +51,7 @@
         <script type="text/javascript">
             async function putNetIfs(netifs) {
                 let body = JSON.stringify(netifs);
-                console.log(body);
+                // console.log(body);
                 await fetch('/api/v1/network/interfaces', {
                     method: 'put',
                     body: body,
