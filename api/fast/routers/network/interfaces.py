@@ -46,6 +46,11 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
         for old_address in old_netif.ip.addresses:
             if old_address not in netif.ip.addresses:
                 print(f"ip remove {old_address} from {netif.name}")
+    for netif in netifs:
+        old_netif = [oni for oni in old_netifs if oni.name == netif.name][0]
+        for address in netif.ip.addresses:
+            if address not in old_netif.ip.addresses:
+                print(f"ip add {address} to {netif.name}")
 
 
 
