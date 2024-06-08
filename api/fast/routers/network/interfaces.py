@@ -57,4 +57,4 @@ async def read_netifs():
 async def replace_netifs(netifs: List[NetworkInterface]):
     global network_interfaces
     network_interfaces = netifs
-    return network_interfaces
+    return []
