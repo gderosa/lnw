@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <script src="https://unpkg.com/underscore@stable/underscore-umd-min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://unpkg.com/alpinejs" defer></script>
         <link rel="stylesheet" href="../style.css">
     </head>
@@ -74,14 +75,13 @@
                         .then(l => this.netifs = l)
                     },
                     putNetIfs() {
-                        let body = JSON.stringify(this.getSanitizedNetIfs());
-                        fetch('/api/v1/network/interfaces', {
-                            method: 'put',
-                            body: body,
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }).then(() => {
+                        let body = this.getSanitizedNetIfs();
+                        axios.put('/api/v1/network/interfaces', body)
+                        .catch( e => {
+                            console.log(e);
+                            alert(e.response.data.detail);
+                        })
+                        .finally( () => {
                             this.fetchNetIfs();
                         });
                     }
