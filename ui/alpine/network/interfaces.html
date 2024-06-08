@@ -47,14 +47,24 @@
             function netIfsData() { // https://stackoverflow.com/a/76344108
                 return {
                     netifs: [],
+                    getSanitizedNetIfs() {  // remove empty ip addrs etc.
+                        sanitizedNetIfs = [];
+                        this.netifs.forEach(netif => {
+                            sanitizedNetIf = netif;
+                            sanitizedNetIf.ip.addresses = sanitizedNetIf.ip.addresses.filter(
+                                address => address.addr.match(/\w/)
+                            );
+                            sanitizedNetIfs.push(sanitizedNetIf);
+                        })
+                        return sanitizedNetIfs;
+                    },
                     fetchNetIfs() {
                         fetch('/api/v1/network/interfaces')
                         .then(r => r.json())
                         .then(l => this.netifs = l)
                     },
                     putNetIfs() {
-                        let body = JSON.stringify(this.netifs);
-                        console.log(body);
+                        let body = JSON.stringify(this.getSanitizedNetIfs());
                         fetch('/api/v1/network/interfaces', {
                             method: 'put',
                             body: body,
