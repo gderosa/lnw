@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 
 class IPAddress(BaseModel):
-    addr: str | None
+    addr: str
     prefix: int | None
 
 class IPData(BaseModel):
