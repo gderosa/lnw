@@ -1,0 +1,2 @@
+lnwuser ALL = NOPASSWD: /usr/sbin/ip address add *
+lnwuser ALL = NOPASSWD: /usr/sbin/ip address delete *
