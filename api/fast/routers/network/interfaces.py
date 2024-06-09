@@ -71,7 +71,7 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                 subprocess.run(cmd, **SUBPROCESS_RUN_OPTS)
 
 
-#URL routes
+# URL routes
 
 router = APIRouter(
     tags=["network/interfaces"],
