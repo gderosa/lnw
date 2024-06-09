@@ -60,14 +60,14 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                 if address.prefix:
                     address_txt = address_txt + '/' + str(address.prefix)
                 cmd = ['sudo', 'ip', 'address', 'add', f'{address_txt}', 'dev', netif.name]
-                LOGGER.info(repr(cmd))
+                LOGGER.info('Executing command: ' + repr(cmd))
                 subprocess.run(cmd, **SUBPROCESS_RUN_OPTS)
     for old_netif in old_netifs:
         netif = [ni for ni in netifs if ni.name == old_netif.name][0]
         for old_address in old_netif.ip.addresses:
             if old_address not in netif.ip.addresses:
                 cmd = ['sudo', 'ip', 'address', 'delete', f'{old_address.addr}/{old_address.prefix}', 'dev', netif.name]
-                LOGGER.info(repr(cmd))
+                LOGGER.info('Executing command: ' + repr(cmd))
                 subprocess.run(cmd, **SUBPROCESS_RUN_OPTS)
 
 
