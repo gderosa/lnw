@@ -1,8 +1,7 @@
-import subprocess
+from typing import List
 import json
 import logging
-
-from typing import List
+import subprocess
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -41,7 +40,6 @@ def execute_command(cmdline: List[str], logger=None):
         logger.error(str(e).strip())
         logger.error(e.stderr.strip())
         raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
-
 
 # Web app <-> System Networking
 
