@@ -13,8 +13,6 @@ from pydantic import BaseModel
 # TODO: this breaks if a different server is used!
 LOGGER = logging.getLogger('uvicorn')
 
-SUBPROCESS_RUN_OPTS = dict(check=True, text=True, capture_output=True)
-
 
 # Models
 
@@ -28,6 +26,21 @@ class IPData(BaseModel):
 class NetworkInterface(BaseModel):
     name: str
     ip: IPData
+
+
+# Web app <-> System
+
+def execute_command(cmdline: List[str], logger=None):
+    SUBPROCESS_RUN_OPTS = dict(check=True, text=True, capture_output=True)
+
+    if logger:
+        logger.info('Executing command: ' + repr(cmdline))
+    try:
+        subprocess.run(cmdline, **SUBPROCESS_RUN_OPTS)
+    except subprocess.CalledProcessError as e:
+        logger.error(str(e).strip())
+        logger.error(e.stderr.strip())
+        raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
 
 
 # Web app <-> System Networking
@@ -59,16 +72,18 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                 address_txt = address.addr
                 if address.prefix:
                     address_txt = address_txt + '/' + str(address.prefix)
-                cmd = ['sudo', 'ip', 'address', 'add', f'{address_txt}', 'dev', netif.name]
-                LOGGER.info('Executing command: ' + repr(cmd))
-                subprocess.run(cmd, **SUBPROCESS_RUN_OPTS)
+                execute_command(
+                    ['sudo', 'ip', 'address', 'add', f'{address_txt}', 'dev', netif.name],
+                    LOGGER
+                )
     for old_netif in old_netifs:
         netif = [ni for ni in netifs if ni.name == old_netif.name][0]
         for old_address in old_netif.ip.addresses:
             if old_address not in netif.ip.addresses:
-                cmd = ['sudo', 'ip', 'address', 'delete', f'{old_address.addr}/{old_address.prefix}', 'dev', netif.name]
-                LOGGER.info('Executing command: ' + repr(cmd))
-                subprocess.run(cmd, **SUBPROCESS_RUN_OPTS)
+                execute_command(
+                    ['sudo', 'ip', 'address', 'delete', f'{old_address.addr}/{old_address.prefix}', 'dev', netif.name],
+                    LOGGER
+                )
 
 
 # URL routes
@@ -84,10 +99,6 @@ async def read_netifs():
 
 @router.put("/network/interfaces")
 async def replace_netifs(netifs: List[NetworkInterface]):
-    try:
-        set_network_interfaces(netifs)
-    except subprocess.CalledProcessError as e:
-        LOGGER.error(str(e).strip())
-        LOGGER.error(e.stderr.strip())
-        raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
+    set_network_interfaces(netifs)
     return get_network_interfaces()
+
