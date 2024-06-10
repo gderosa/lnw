@@ -18,11 +18,15 @@ end
 #  (*) default gw
 
 Vagrant.configure('2') do |config|
+  assign_ram config, RAM_MB
+
+  config.vm.box = DEBIAN_BOX
+  config.vm.synced_folder '.', '/opt/lnw'
+  config.vm.provision :shell, path: 'scripts/setup.sh'
+  config.vm.provision :shell, path: 'scripts/start.sh', run: 'always'
+
   config.vm.define 'lnw', primary: true do |lnw|
-    lnw.vm.box = DEBIAN_BOX
-    assign_ram lnw, RAM_MB
-    lnw.vm.hostname 'lnw'
-    lnw.vm.synced_folder '.', '/opt/lnw'
+    lnw.vm.hostname = 'lnw'
 
     lnw.vm.network 'forwarded_port', guest: 8000, host: 8001
 
@@ -40,22 +44,21 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'lnwb', autostart: false do |lnwb|
-    lnwb.vm.box = DEBIAN_BOX
-    assign_ram lnwb, RAM_MB
-    lnwb.vm.hostname 'lnwb'
-    lnwb.vm.synced_folder '.', '/opt/lnw'
+    lnwb.vm.hostname = 'lnwb'
 
     lnwb.vm.network 'forwarded_port', guest: 8000, host: 8002
 
-    # NIC #1 is the default NAT interface, with forwarded ports above
+    # NIC #1 is the default NAT interface, with forwarded ports above, connected to host machine
+    lnwb.vm.network "public_network",
+        use_dhcp_assigned_default_route: true
 
-    # NIC #2
-    lnw.vm.network 'private_network',
+    # NIC #2  Connected to the other network appliance
+    lnwb.vm.network 'private_network',
       auto_config: false,
       virtualbox__intnet: 'internal-a-1'
 
     # NIC #3
-    lnw.vm.network 'private_network',
+    lnwb.vm.network 'private_network',
       auto_config: false,
       virtualbox__intnet: 'internal-b-1'
   end
