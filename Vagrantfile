@@ -9,13 +9,13 @@ def assign_ram(vmcfg, megabytes)
   end
 end
 
-#                +----------------------------------+
-#                |                                  |
-#  Internet --- Host --- LNW --- internal-a-1 --- LNWb(*) --- internal-b-1
-#                         |
-#                         +----- internal-a-2
+#                +-----------------------------------+
+#                |                                   |
+#  Internet --- Host -(*)- LNW --- internal-a-1 -(*)- LNWb --- internal-b-1
+#                           |
+#                           +----- internal-a-2
 #
-#  (*) default route towards internal-a-1, not the host
+#  (*) default gw
 
 Vagrant.configure('2') do |config|
   config.vm.define 'lnw', primary: true do |lnw|
