@@ -9,9 +9,9 @@ APPDIR=/opt/$APPNAME
 VENVDIR=$HOME/.virtualenvs/$APPNAME
 PYTHON=python3
 
-su - $USERNAME -c <<END
+su - $USERNAME -c "
     cd $APPDIR
     source $VENVDIR/bin/activate
-    fastapi dev api/main.py
-END
+    fastapi dev --host 0.0.0.0 api/fast/main.py
+"
 
