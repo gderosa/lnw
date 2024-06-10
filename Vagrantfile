@@ -1,4 +1,4 @@
-# Inspired to https://github.com/vemarsas/wiedii-bootstrap/blob/main/Vagrantfile
+# Inspired by https://github.com/vemarsas/wiedii-bootstrap/blob/main/Vagrantfile
 
 DEBIAN_BOX  = 'boxomatic/debian-13'
 RAM_MB      = 1024
