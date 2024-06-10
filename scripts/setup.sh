@@ -21,6 +21,8 @@ apt-get -y install python3 python3-venv
 adduser --system --shell /bin/bash --home $HOME --group $USERNAME && \
         echo "$USER:$PASSWORD" | chpasswd
 
+chmod o-rwx $HOME
+
 install -v $APPDIR/api/examples/sys/sudoers /etc/sudoers.d/lnw
 
 su - $USERNAME -c "$PYTHON -m venv $VENVDIR"
