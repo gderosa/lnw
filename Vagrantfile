@@ -3,11 +3,6 @@
 DEBIAN_BOX    = 'boxomatic/debian-13'
 RAM_MB        = 1024
 
-ENABLE_SSHD_PASSWD = <<-END
-  sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-  systemctl restart sshd.service
-END
-
 def assign_ram(vmcfg, megabytes)
   vmcfg.vm.provider 'virtualbox' do |vb|
     vb.memory = megabytes
@@ -27,13 +22,13 @@ Vagrant.configure('2') do |config|
 
   config.vm.box = DEBIAN_BOX
 
-  config.vm.synced_folder '.',      '/vagrant',                   disabled: true
-  config.vm.provision     'file',   source: '.',                  destination: '/tmp/lnw'
+  config.vm.synced_folder '.',      '/vagrant',                         disabled: true
+  config.vm.provision     'file',   source: 'scripts/files/sshd_config' destination: '/etc/ssh/sshd_config.d/lnw'
+  config.vm.provision     'file',   source: '.',                        destination: '/tmp/lnw'
   config.vm.provision     'shell',  inline: 'mv -v /tmp/lnw /opt/lnw'
-  config.vm.provision     'shell',  path: 'scripts/setup.sh'
-  config.vm.provision     'shell',  path: 'scripts/setup_dev.sh'
-  config.vm.provision     'shell',  inline: ENABLE_SSHD_PASSWD
-  config.vm.provision     'shell',  path: 'scripts/start.sh', run: 'always'
+  config.vm.provision     'shell',  path:   'scripts/setup.sh'
+  config.vm.provision     'shell',  path:   'scripts/setup_dev.sh'
+  config.vm.provision     'shell',  path:   'scripts/start.sh',         run: 'always'
 
   config.vm.define 'lnw', primary: true do |lnw|
     lnw.vm.hostname = 'lnw'
