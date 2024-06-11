@@ -9,14 +9,9 @@ from pydantic import BaseModel
 
 
 
-# Constants and globals
-
 # TODO: this breaks if a different server is used!
 LOGGER = logging.getLogger('uvicorn')
 
-
-
-# Models
 
 
 class AddressFamily (str, Enum):
@@ -25,11 +20,11 @@ class AddressFamily (str, Enum):
 
 
 class IPAddress(BaseModel):
-    family:     AddressFamily   | None
+    family:     AddressFamily   | None      = None
     addr:       str
-    prefix:     int             | None
-    scope:      str             | None      # Enum?
-    dynamic:    bool            | None      #
+    prefix:     int             | None      = None
+    scope:      str             | None      = None
+    dynamic:    bool            | None      = None
 
     def statically_persistable(self) -> bool:
         if self.scope == 'global':
@@ -47,13 +42,28 @@ class IPData(BaseModel):
 
 class NetworkInterface(BaseModel):
     name:       str
-    flags:      List[str]       = []        # List of Enums?
-    link_type:  str             | None      # Enum?
+    flags:      List[str]                   = []
+    link_type:  str             | None      = None
     ip:         IPData
 
+    def statically_persistable(self) -> bool:
+        if 'LOOPBACK' in self.flags:
+            return False
+        if self.link_type == 'loopback':
+            return False
+
+    def statically_persistable_addresses(self) -> List[IPAddress]:
+        if self.statically_persistable():
+            addresses = []
+            for address in self.ip.addresses:
+                if address.statically_persistable():
+                    addresses.push(address)
+            return addresses
+        else:
+            return []
 
 
-# Web app <-> System
+
 
 def execute_command(cmdline: List[str], logger=None):
     SUBPROCESS_RUN_OPTS = dict(check=True, text=True, capture_output=True)
@@ -67,8 +77,6 @@ def execute_command(cmdline: List[str], logger=None):
         logger.error(e.stderr.strip())
         raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
 
-
-# Web app <-> System Networking
 
 def get_network_interfaces() -> NetworkInterface:
     iproute2_data = json.loads(subprocess.check_output(['ip', '--json', 'address', 'show']))
@@ -93,6 +101,7 @@ def get_network_interfaces() -> NetworkInterface:
         netifs.append(netif)
     return netifs
 
+
 def set_network_interfaces(netifs: List[NetworkInterface]):
     old_netifs = get_network_interfaces()
     for netif in netifs:
@@ -116,8 +125,6 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                 )
 
 
-
-# URL routes
 
 router = APIRouter(
     tags=["network/interfaces"],
