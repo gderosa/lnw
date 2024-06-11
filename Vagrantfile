@@ -26,9 +26,14 @@ Vagrant.configure('2') do |config|
   assign_ram config, RAM_MB
 
   config.vm.box = DEBIAN_BOX
-  config.vm.provision 'file',   source: '.',                  destination: '/opt/lnw'
-  config.vm.provision 'shell',  path: 'scripts/setup.sh'
-  config.vm.provision 'shell',  path: 'scripts/setup_dev.sh'
+
+  config.vm.synced_folder '.',      '/vagrant',                   disabled: true
+  config.vm.provision     'file',   source: '.',                  destination: '/tmp/lnw'
+  config.vm.provision     'shell',  inline: 'mv -v /tmp/lnw /opt/lnw'
+  config.vm.provision     'shell',  path: 'scripts/setup.sh'
+  config.vm.provision     'shell',  path: 'scripts/setup_dev.sh'
+  config.vm.provision     'shell',  inline: ENABLE_SSHD_PASSWD
+  config.vm.provision     'shell',  path: 'scripts/start.sh', run: 'always'
 
   config.vm.define 'lnw', primary: true do |lnw|
     lnw.vm.hostname = 'lnw'
@@ -71,9 +76,6 @@ Vagrant.configure('2') do |config|
     lnwb.vm.network 'private_network',
       auto_config: false,
       virtualbox__intnet: 'internal-b-1'
-
-    lnwb.vm.provision "shell", inline: ENABLE_SSHD_PASSWD
-    lnwb.vm.provision 'shell', path: 'scripts/start.sh', run: 'always'
   end
 end
 
