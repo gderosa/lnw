@@ -1,7 +1,12 @@
 # Inspired by https://github.com/vemarsas/wiedii-bootstrap/blob/main/Vagrantfile
 
-DEBIAN_BOX  = 'boxomatic/debian-13'
-RAM_MB      = 1024
+DEBIAN_BOX    = 'boxomatic/debian-13'
+RAM_MB        = 1024
+
+ENABLE_SSHD_PASSWD = <<-END
+  sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+  systemctl restart sshd.service
+END
 
 def assign_ram(vmcfg, megabytes)
   vmcfg.vm.provider 'virtualbox' do |vb|
@@ -21,13 +26,14 @@ Vagrant.configure('2') do |config|
   assign_ram config, RAM_MB
 
   config.vm.box = DEBIAN_BOX
-  config.vm.synced_folder '.', '/opt/lnw'
-  config.vm.provision :shell, path: 'scripts/setup.sh'
-  config.vm.provision :shell, path: 'scripts/start.sh', run: 'always'
+  config.vm.provision 'file',   source: '.',                  destination: '/opt/lnw'
+  config.vm.provision 'shell',  path: 'scripts/setup.sh'
+  config.vm.provision 'shell',  path: 'scripts/setup_dev.sh'
 
   config.vm.define 'lnw', primary: true do |lnw|
     lnw.vm.hostname = 'lnw'
 
+    lnw.vm.network "forwarded_port", guest: 22,   host: 2201
     lnw.vm.network 'forwarded_port', guest: 8000, host: 8001
 
     # NIC #1 is the default NAT interface, with forwarded ports above
@@ -41,11 +47,15 @@ Vagrant.configure('2') do |config|
     lnw.vm.network 'private_network',
       auto_config: false,
       virtualbox__intnet: 'internal-a-2'
+
+    lnw.vm.provision "shell", inline: ENABLE_SSHD_PASSWD
+    lnw.vm.provision 'shell', path: 'scripts/start.sh', run: 'always'
   end
 
   config.vm.define 'lnwb', autostart: false do |lnwb|
     lnwb.vm.hostname = 'lnwb'
 
+    # lnwb.vm.network "forwarded_port", guest: 22,   host: 2202
     lnwb.vm.network 'forwarded_port', guest: 8000, host: 8002
 
     # NIC #1 is the default NAT interface, with forwarded ports above, connected to host machine
@@ -61,6 +71,9 @@ Vagrant.configure('2') do |config|
     lnwb.vm.network 'private_network',
       auto_config: false,
       virtualbox__intnet: 'internal-b-1'
+
+    lnwb.vm.provision "shell", inline: ENABLE_SSHD_PASSWD
+    lnwb.vm.provision 'shell', path: 'scripts/start.sh', run: 'always'
   end
 end
 
