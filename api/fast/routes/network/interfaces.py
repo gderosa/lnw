@@ -1,4 +1,5 @@
 from typing import List
+from enum import Enum
 import json
 import logging
 import subprocess
@@ -7,24 +8,49 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 
+
 # Constants and globals
 
 # TODO: this breaks if a different server is used!
 LOGGER = logging.getLogger('uvicorn')
 
 
+
 # Models
 
+
+class AddressFamily (str, Enum):
+    IPv4 = 'inet'
+    IPv6 = 'inet6'
+
+
 class IPAddress(BaseModel):
-    addr: str
-    prefix: int | None
+    family:     AddressFamily   | None
+    addr:       str
+    prefix:     int             | None
+    scope:      str             | None      # Enum?
+    dynamic:    bool            | None      #
+
+    def statically_persistable(self) -> bool:
+        if self.scope == 'global':
+            if self.dynamic:
+                return False
+            else:
+                return True
+        else:
+            return False
+
 
 class IPData(BaseModel):
     addresses: List[IPAddress]
 
+
 class NetworkInterface(BaseModel):
-    name: str
-    ip: IPData
+    name:       str
+    flags:      List[str]       = []        # List of Enums?
+    link_type:  str             | None      # Enum?
+    ip:         IPData
+
 
 
 # Web app <-> System
@@ -41,6 +67,7 @@ def execute_command(cmdline: List[str], logger=None):
         logger.error(e.stderr.strip())
         raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
 
+
 # Web app <-> System Networking
 
 def get_network_interfaces() -> NetworkInterface:
@@ -48,15 +75,20 @@ def get_network_interfaces() -> NetworkInterface:
     netifs = []
     for iproute2_iface in iproute2_data:
         netif = NetworkInterface(
-            name = iproute2_iface['ifname'],
-            ip = IPData(
-                addresses = []
+            name=iproute2_iface['ifname'],
+            flags=iproute2_iface['flags'],
+            link_type=iproute2_iface['link_type'],
+            ip=IPData(
+                addresses=[]
             )
         )
         for addr_info_el in iproute2_iface['addr_info']:
             netif.ip.addresses.append(IPAddress(
                 addr=addr_info_el['local'],
-                prefix=addr_info_el['prefixlen']
+                prefix=addr_info_el['prefixlen'],
+                family=addr_info_el['family'],
+                scope=addr_info_el['scope'],
+                dynamic=(addr_info_el['dynamic'] if 'dynamic' in addr_info_el else False)
             ))
         netifs.append(netif)
     return netifs
@@ -82,6 +114,7 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                     ['sudo', 'ip', 'address', 'delete', f'{old_address.addr}/{old_address.prefix}', 'dev', netif.name],
                     LOGGER
                 )
+
 
 
 # URL routes
