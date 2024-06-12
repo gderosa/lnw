@@ -29,9 +29,9 @@ Vagrant.configure('2') do |config|
 
   assign_ram                  config,   RAM_MB
 
-  config.vm.synced_folder     '.',      '/vagrant',                         disabled: true
-  config.vm.provision         'file',   source: 'scripts/files/sshd_config' destination: '/etc/ssh/sshd_config.d/lnw'
-  config.vm.provision         'file',   source: '.',                        destination: '/tmp/lnw'
+  config.vm.synced_folder     '.',      '/vagrant',                           disabled: true
+  config.vm.provision         'file',   source: 'scripts/files/sshd_config',  destination: '/etc/ssh/sshd_config.d/lnw'
+  config.vm.provision         'file',   source: '.',                          destination: '/tmp/lnw'
   config.vm.provision         'shell',  inline: 'mv -v /tmp/lnw /opt/lnw'
   config.vm.provision         'shell',  path:   'scripts/setup.sh'
   config.vm.provision         'shell',  path:   'scripts/setup_dev.sh'
@@ -56,7 +56,6 @@ Vagrant.configure('2') do |config|
       auto_config: false,
       virtualbox__intnet: 'internal-a-2'
 
-    lnw.vm.provision "shell", inline: ENABLE_SSHD_PASSWD
     lnw.vm.provision 'shell', path: 'scripts/start.sh', run: 'always'
   end
 
