@@ -33,7 +33,8 @@ Vagrant.configure('2') do |config|
   config.vm.provision         'shell',  inline: 'mv -v /tmp/lnw /opt/lnw'
   config.vm.provision         'shell',  path:   'scripts/setup.sh'
   config.vm.provision         'shell',  path:   'scripts/setup_dev.sh'
-  config.vm.provision         'file',   source: 'scripts/files/sshd_config',  destination: '/etc/ssh/sshd_config.d/lnw'
+  config.vm.provision         'file',   source: 'scripts/files/sshd_config',  destination: '/tmp/sshd_config_lnw'
+  config.vm.provision         'shell',  inline: 'mv -v /tmp/sshd_config_lnw /etc/ssh/sshd_config.d/lnw.conf'
 
   config.vm.post_up_message = MESSAGE
 
@@ -54,8 +55,6 @@ Vagrant.configure('2') do |config|
     lnw.vm.network 'private_network',
       auto_config: false,
       virtualbox__intnet: 'internal-a-2'
-
-    lnw.vm.provision 'shell', path: 'scripts/start.sh', run: 'always'
   end
 
   config.vm.define 'lnwb', autostart: false do |lnwb|
