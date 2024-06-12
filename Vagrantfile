@@ -7,7 +7,7 @@ MESSAGE       = <<END
   ssh -p 2202 lnw@localhost
   cd /opt/lnw
   source /var/lib/lnw/.virtualenv/lnw/bin/activate
-  fastapi dev api/fast/main.py
+  fastapi dev --host 0.0.0.0 api/fast/main.py
 END
 
 def assign_ram(vmcfg, megabytes)
@@ -29,12 +29,11 @@ Vagrant.configure('2') do |config|
 
   assign_ram                  config,   RAM_MB
 
-  config.vm.synced_folder     '.',      '/vagrant',                           disabled: true
-  config.vm.provision         'file',   source: 'scripts/files/sshd_config',  destination: '/etc/ssh/sshd_config.d/lnw'
   config.vm.provision         'file',   source: '.',                          destination: '/tmp/lnw'
   config.vm.provision         'shell',  inline: 'mv -v /tmp/lnw /opt/lnw'
   config.vm.provision         'shell',  path:   'scripts/setup.sh'
   config.vm.provision         'shell',  path:   'scripts/setup_dev.sh'
+  config.vm.provision         'file',   source: 'scripts/files/sshd_config',  destination: '/etc/ssh/sshd_config.d/lnw'
 
   config.vm.post_up_message = MESSAGE
 
