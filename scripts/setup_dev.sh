@@ -16,9 +16,8 @@ export DEBIAN_FRONTEND=noninteractive
 dpkg --configure -a
 apt-get -f install
 apt-get -y update
-apt-get -y upgrade
 apt-get -y autoremove
-apt-get -y mc jq
+apt-get -y install mc jq
 
 chown -Rv $USER $APPDIR
 
