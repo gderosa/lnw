@@ -1,3 +1,8 @@
+# lnw user can sudo "normally" (i.e. with password); 
+# only certain commands are allowed with no password.
+
+lnw ALL = (ALL:ALL) ALL
+
 lnw ALL = NOPASSWD: /usr/sbin/ip address add *
 lnw ALL = NOPASSWD: /usr/sbin/ip address delete *
 
