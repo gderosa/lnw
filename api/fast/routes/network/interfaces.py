@@ -64,7 +64,6 @@ class NetworkInterface(BaseModel):
 
 
 
-
 def execute_command(cmdline: List[str], logger=None):
     SUBPROCESS_RUN_OPTS = dict(check=True, text=True, capture_output=True)
 
@@ -132,11 +131,11 @@ router = APIRouter(
 )
 
 @router.get("/network/interfaces")
-async def read_netifs():
+async def read_netifs() -> List[NetworkInterface] :
     return get_network_interfaces()
 
 @router.put("/network/interfaces")
-async def replace_netifs(netifs: List[NetworkInterface]):
+async def replace_netifs(netifs: List[NetworkInterface])  -> List[NetworkInterface] :
     set_network_interfaces(netifs)
     return get_network_interfaces()
 
