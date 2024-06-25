@@ -5,7 +5,7 @@ import logging
 import subprocess
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 
@@ -43,7 +43,11 @@ class IPData(BaseModel):
 class NetworkInterface(BaseModel):
     name:       str
     flags:      List[str]                   = []
-    link_type:  str             | None      = None
+    link_type:  str             | None      = Field(
+        default=None,
+        title="TITLE OF THIS FIELD!!!",
+        description="e.g. looback, ether, etc."  # https://medium.com/codex/how-to-document-an-api-for-python-fastapi-best-practices-for-maintainable-and-readable-code-a183a3f7f036
+    )
     ip:         IPData
 
     def statically_persistable(self) -> bool:
