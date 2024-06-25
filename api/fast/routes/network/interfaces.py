@@ -3,9 +3,10 @@ from enum import Enum
 import json
 import logging
 import subprocess
+from functools import cached_property
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 
@@ -65,6 +66,21 @@ class NetworkInterface(BaseModel):
             return addresses
         else:
             return []
+    
+    @computed_field
+    @cached_property
+    def is_dhcp(self) -> bool:
+        sp = subprocess.run(
+            f"ps aux | grep -v grep | grep dhc | grep {self.name}",
+            shell=True, check=False, capture_output=True
+        )
+        if sp.returncode == 0:
+            return bool(sp.stdout.strip())
+        if sp.returncode == 1:
+            return False
+        # from grep man page, exit status = 2 for actual errors
+        sp.check_returncode()
+        
 
 
 
