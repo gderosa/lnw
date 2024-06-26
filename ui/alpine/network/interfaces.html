@@ -15,6 +15,7 @@
                     <tr>
                         <th>name</th>
                         <th>addresses</th>
+                        <th>dhcp</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,6 +48,13 @@
                                 >
                                     +
                                 </button>
+                            </td>
+                            <td>
+                                <input
+                                    :id="`netifs[${netif.name}][dhcp]`"
+                                    type="checkbox"
+                                    x-model="netif.is_dhcp"
+                                >
                             </td>
                         </tr>
                     </template>

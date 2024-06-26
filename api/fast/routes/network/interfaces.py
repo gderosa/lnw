@@ -46,8 +46,7 @@ class NetworkInterface(BaseModel):
     flags:      List[str]                   = []
     link_type:  str             | None      = Field(
         default=None,
-        title="TITLE OF THIS FIELD!!!",
-        description="e.g. looback, ether, etc."  # https://medium.com/codex/how-to-document-an-api-for-python-fastapi-best-practices-for-maintainable-and-readable-code-a183a3f7f036
+        description="e.g. 'looback', 'ether', etc."
     )
     ip:         IPData
 
