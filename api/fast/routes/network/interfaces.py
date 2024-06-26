@@ -46,7 +46,7 @@ class NetworkInterface(BaseModel):
     flags:      List[str]                   = []
     link_type:  str             | None      = Field(
         default=None,
-        description="e.g. 'looback', 'ether', etc."
+        description="e.g. 'loopback', 'ether', etc."
     )
     ip:         IPData
 
@@ -55,6 +55,9 @@ class NetworkInterface(BaseModel):
             return False
         if self.link_type == 'loopback':
             return False
+        if self.is_dhcp():
+            return False
+        return True
 
     def statically_persistable_addresses(self) -> List[IPAddress]:
         if self.statically_persistable():
