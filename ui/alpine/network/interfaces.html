@@ -61,6 +61,7 @@
                 </tbody>
             </table>
             <button type="submit">Update!</button>
+            <button type="button" @click="persistNetIfs()">Persist!</button>
         <form>
 
         <script type="text/javascript">
@@ -86,6 +87,17 @@
                     putNetIfs() {
                         let body = this.getSanitizedNetIfs();
                         axios.put('/api/v1/network/interfaces', body)
+                        .catch( e => {
+                            console.log(e);
+                            alert(e.response.data.detail);
+                        })
+                        .finally( () => {
+                            this.fetchNetIfs();
+                        });
+                    },
+                    persistNetIfs() {
+                        let body = this.getSanitizedNetIfs();
+                        axios.post('/api/v1/network/interfaces/persist', body)
                         .catch( e => {
                             console.log(e);
                             alert(e.response.data.detail);
