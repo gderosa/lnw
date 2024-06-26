@@ -35,3 +35,7 @@ su - $USER -c "
     pip install -r requirements.txt
 "
 
+systemctl enable systemd-networkd
+systemctl start systemd-networkd
+systemctl status systemd-networkd
+
