@@ -55,7 +55,7 @@ class NetworkInterface(BaseModel):
             return False
         if self.link_type == 'loopback':
             return False
-        if self.is_dhcp():
+        if self.is_dhcp:
             return False
         return True
 
@@ -64,7 +64,7 @@ class NetworkInterface(BaseModel):
             addresses = []
             for address in self.ip.addresses:
                 if address.statically_persistable():
-                    addresses.push(address)
+                    addresses.append(address)
             return addresses
         else:
             return []
@@ -157,16 +157,20 @@ async def read_netifs() -> List[NetworkInterface] :
     return get_network_interfaces()
 
 @router.put("/network/interfaces")
-async def replace_netifs(netifs: List[NetworkInterface])  -> List[NetworkInterface] :
+async def replace_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterface] :
     set_network_interfaces(netifs)
     return get_network_interfaces()
 
 @router.post("/network/interfaces/persist")
-async def persist_netifs(netifs: List[NetworkInterface]):
+async def persist_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterface]:
     persisted_netifs = []
     for netif in netifs:
         if netif.is_dhcp:
-            persist_netifs.push(netif)
+            persisted_netifs.append(netif)
         elif netif.statically_persistable():
-            pass  # TODO
+            persisted_addresses = netif.statically_persistable_addresses()
+            netif.ip.addresses = persisted_addresses
+            persisted_netifs.append(netif)
+    return persisted_netifs
+
 
