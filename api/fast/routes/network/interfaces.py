@@ -161,3 +161,12 @@ async def replace_netifs(netifs: List[NetworkInterface])  -> List[NetworkInterfa
     set_network_interfaces(netifs)
     return get_network_interfaces()
 
+@router.post("/network/interfaces/persist")
+async def persist_netifs(netifs: List[NetworkInterface]):
+    persisted_netifs = []
+    for netif in netifs:
+        if netif.is_dhcp:
+            persist_netifs.push(netif)
+        elif netif.statically_persistable():
+            pass  # TODO
+
