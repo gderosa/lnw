@@ -9,7 +9,11 @@
     </head>
     <body>
         <h2>Network Interfaces</h2>
-        <form id="netifs_form" x-data="netIfsData" x-init="fetchNetIfs" @submit.prevent="putNetIfs">
+        <form id="netifs_form"
+                x-data="netIfsData"
+                x-init="fetchNetIfs"
+                @submit.prevent="putNetIfs"
+                @input="enableUpdate=true;enablePersist=false">
             <table>
                 <thead>
                     <tr>
@@ -60,14 +64,16 @@
                     </template>
                 </tbody>
             </table>
-            <button type="submit">Update!</button>
-            <button type="button" @click="persistNetIfs()">Persist!</button>
+            <button type="submit"                           :disabled="!enableUpdate">Update!</button>
+            <button type="button" @click="persistNetIfs()"  :disabled="!enablePersist">Persist!</button>
         <form>
 
         <script type="text/javascript">
             function netIfsData() { // https://stackoverflow.com/a/76344108
                 return {
                     netifs: [],
+                    enableUpdate: false,
+                    enablePersist: true,
                     getSanitizedNetIfs() {  // remove empty ip addrs etc.
                         sanitizedNetIfs = [];
                         this.netifs.forEach(netif => {
