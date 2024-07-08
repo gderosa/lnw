@@ -89,7 +89,7 @@
                         fetch('/api/v1/network/interfaces')
                         .then(r => r.json())
                         .then(l => this.netifs = l)
-                        .then(()=> this.formChanged = false)
+                        .then(() => this.formChanged = false)
                     },
                     putNetIfs() {
                         let body = this.getSanitizedNetIfs();
@@ -103,8 +103,7 @@
                         });
                     },
                     persistNetIfs() {
-                        let body = this.getSanitizedNetIfs();
-                        axios.post('/api/v1/network/interfaces/persist', body)
+                        axios.post('/api/v1/network/interfaces/persist')
                         .catch( e => {
                             console.log(e);
                             alert(e.response.data.detail);

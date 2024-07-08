@@ -68,7 +68,7 @@ class NetworkInterface(BaseModel):
             return addresses
         else:
             return []
-    
+
     @computed_field
     @cached_property
     def is_dhcp(self) -> bool:
@@ -82,7 +82,7 @@ class NetworkInterface(BaseModel):
             return False
         # from grep man page, exit status = 2 for actual errors
         sp.check_returncode()
-        
+
 
 
 
@@ -162,7 +162,8 @@ async def replace_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterfac
     return get_network_interfaces()
 
 @router.post("/network/interfaces/persist")
-async def persist_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterface]:
+async def persist_netifs() -> List[NetworkInterface]:
+    netifs = get_network_interfaces()
     persisted_netifs = []
     for netif in netifs:
         if netif.is_dhcp:
