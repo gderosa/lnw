@@ -9,12 +9,17 @@
     </head>
     <body>
         <h2>Network Interfaces</h2>
-        <form id="netifs_form" x-data="netIfsData" x-init="fetchNetIfs" @submit.prevent="putNetIfs">
+        <form id="netifs_form"
+                x-data="netIfsData"
+                x-init="fetchNetIfs"
+                @submit.prevent="putNetIfs"
+                @input="formChanged=true">
             <table>
                 <thead>
                     <tr>
                         <th>name</th>
                         <th>addresses</th>
+                        <th>dhcp</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,17 +53,27 @@
                                     +
                                 </button>
                             </td>
+                            <td>
+                                <input
+                                    :id="`netifs[${netif.name}][dhcp]`"
+                                    type="checkbox"
+                                    x-model="netif.is_dhcp"
+                                >
+                            </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
-            <button type="submit">Update!</button>
+            <button type="submit"                           :disabled="!formChanged">Update!</button>
+            <button type="button" @click="fetchNetIfs()"    :disabled="!formChanged">Refresh!</button>
+            <button type="button" @click="persistNetIfs()"  :disabled=" formChanged">Persist!</button>
         <form>
 
         <script type="text/javascript">
             function netIfsData() { // https://stackoverflow.com/a/76344108
                 return {
                     netifs: [],
+                    formChanged: false,
                     getSanitizedNetIfs() {  // remove empty ip addrs etc.
                         sanitizedNetIfs = [];
                         this.netifs.forEach(netif => {
@@ -74,10 +89,21 @@
                         fetch('/api/v1/network/interfaces')
                         .then(r => r.json())
                         .then(l => this.netifs = l)
+                        .then(() => this.formChanged = false)
                     },
                     putNetIfs() {
                         let body = this.getSanitizedNetIfs();
                         axios.put('/api/v1/network/interfaces', body)
+                        .catch( e => {
+                            console.log(e);
+                            alert(e.response.data.detail);
+                        })
+                        .finally( () => {
+                            this.fetchNetIfs();
+                        });
+                    },
+                    persistNetIfs() {
+                        axios.post('/api/v1/network/interfaces/persist')
                         .catch( e => {
                             console.log(e);
                             alert(e.response.data.detail);
