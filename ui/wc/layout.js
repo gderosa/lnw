@@ -32,7 +32,14 @@ class SideMenu extends HTMLElement {
         const ul = $new('ul');
         items.forEach((item) => {
             const li = $new('li');
-            li.textContent = item.title
+            if ('href' in item) {
+                const a = $new('a');
+                a.href = item.href;
+                a.textContent = item.title;
+                li.appendChild(a);
+            } else {
+                li.textContent = item.title
+            }
             if ('children' in item) {
                 li.appendChild(this.makeUl(item.children));
             }
