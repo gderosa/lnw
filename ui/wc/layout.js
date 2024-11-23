@@ -61,9 +61,13 @@ class LayoutWrapper extends HTMLElement {
         const footer = document.createElement('footer');
         footer.textContent = 'foot text';
   
-        this.prepend(sideMenu);
-        this.prepend(heading);
-        this.appendChild(footer);
+        this.prepend(
+            heading,
+            sideMenu
+        );
+        this.append(
+            footer
+        );
     }
 }
 customElements.define('layout-wrapper', LayoutWrapper);
