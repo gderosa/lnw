@@ -53,12 +53,12 @@ class LayoutWrapper extends HTMLElement {
         super();
     }
     connectedCallback() {
-        const heading = document.createElement('h1');
+        const heading = $new('h1');
         heading.textContent = this.getAttribute('title');
 
         const sideMenu = new SideMenu();
         
-        const footer = document.createElement('footer');
+        const footer = $new('footer');
         footer.textContent = 'foot text';
   
         this.prepend(
