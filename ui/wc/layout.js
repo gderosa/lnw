@@ -1,4 +1,6 @@
 class LayoutWrapper extends HTMLElement {
+    // No shadow DOM for now. See e.g. https://gomakethings.com/the-shadow-dom-is-an-antipattern/.
+
     constructor() {
         super();
     }

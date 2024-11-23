@@ -20,5 +20,5 @@ async def api_root():
 
 @app.get("/")
 async def ui_home():
-    return RedirectResponse("/ui/alpine/index.html")
+    return RedirectResponse("/ui/index.html")
 
