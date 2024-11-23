@@ -14,20 +14,8 @@ class SideMenu extends HTMLElement {
             ]},
             {title: 'Extras (TODO)'}
         ]
-        /* Should render as:
-         *
-         * <ul>
-         *   <li>Home</li>
-         *   <li>Network
-         *     <ul>
-         *       <li>Interfaces</li>
-         *       <li>OpenVPN</li>
-         *     </ul>
-         *   <li/>
-         * </ul>
-         * 
-         */
     }
+    // https://iamkate.com/code/tree-views/
     static makeUl(items) {
         const ul = $new('ul');
         items.forEach((item) => {
@@ -41,7 +29,13 @@ class SideMenu extends HTMLElement {
                 li.textContent = item.title
             }
             if ('children' in item) {
-                li.appendChild(this.makeUl(item.children));
+                const dtls = $new('details');
+                const sumr = $new('summary');
+                sumr.textContent = item.title;
+                li.textContent = '';
+                dtls.appendChild(sumr);
+                dtls.appendChild(this.makeUl(item.children));
+                li.appendChild(dtls);
             }
             ul.appendChild(li);
         })
