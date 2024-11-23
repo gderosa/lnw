@@ -1,14 +1,24 @@
 /* https://stackoverflow.com/a/56861696 */
 
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
 side-menu {
     background: #def;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     margin-right: 1em;
-    padding-top: 1.5em;
+    padding-top: 1.4em;
     max-width: 16em;
     font-family: sans-serif;
+}
+
+side-menu li {
+    display: block;
+    margin: 0.4em 0;
 }
 
 main-content {
@@ -16,11 +26,6 @@ main-content {
     display: flex;
     flex-direction: column;
     flex-grow: 3;
-}
-
-.container {
-    display: flex;
-    flex-direction: row;
 }
 
 
