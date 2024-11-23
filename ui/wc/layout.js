@@ -1,7 +1,7 @@
 
 // TODO: modularize
-const $     = (selector)  => document.querySelector(selector);
-const $n    = (tag)       => document.createElement(tag);
+const $qs   =   (selector)  => document.querySelector(selector);
+const $new  =   (tag)       => document.createElement(tag);
 
 class SideMenu extends HTMLElement {
     constructor() {
@@ -26,17 +26,12 @@ class SideMenu extends HTMLElement {
          *   <li/>
          * </ul>
          * 
-         * 
-         * 
-         * 
-         * 
-         * 
          */
     }
     static makeUl(items) {
-        const ul = $n('ul');
+        const ul = $new('ul');
         items.forEach((item) => {
-            const li = $n('li');
+            const li = $new('li');
             li.textContent = item.title
             if ('children' in item) {
                 li.appendChild(this.makeUl(item.children));
