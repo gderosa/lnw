@@ -21,6 +21,11 @@ side-menu li {
     margin: 0.4em 0;
 }
 
+side-menu ul li details summary:marker {
+    /* visibility: hidden; */
+    color: green;
+}
+
 main-content {
     /* border: 1px #ddd dotted; */
     display: flex;

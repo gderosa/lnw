@@ -12,7 +12,7 @@ class SideMenu extends HTMLElement {
                 {title: 'Interfaces', href: 'network/interfaces.html'},
                 {title: 'OpenVPN', href: 'network/openvpn.html'}
             ]},
-            {title: 'Extras (TODO)'}
+            {title: 'Extras (T1DO)'}
         ]
     }
     // https://iamkate.com/code/tree-views/
@@ -20,23 +20,23 @@ class SideMenu extends HTMLElement {
         const ul = $new('ul');
         items.forEach((item) => {
             const li = $new('li');
+            const details = $new('details');
+            const summary = $new('summary');
             if ('href' in item) {
                 const a = $new('a');
                 a.href = item.href;
                 a.textContent = item.title;
-                li.appendChild(a);
+                summary.appendChild(a);
             } else {
-                li.textContent = item.title
+                summary.textContent = item.title;
             }
+            details.appendChild(summary);
             if ('children' in item) {
-                const dtls = $new('details');
-                const sumr = $new('summary');
-                sumr.textContent = item.title;
-                li.textContent = '';
-                dtls.appendChild(sumr);
-                dtls.appendChild(this.makeUl(item.children));
-                li.appendChild(dtls);
+                details.appendChild(this.makeUl(item.children));
+            } else {
+                details.classList.add('nochildren')
             }
+            li.appendChild(details);
             ul.appendChild(li);
         })
         return ul;
