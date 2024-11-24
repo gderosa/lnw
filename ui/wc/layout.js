@@ -1,9 +1,5 @@
 import { menuData } from "./menu-data.js";
-
-
-// TODO: modularize
-const $qs   =   (selector)  => document.querySelector(selector);
-const $new  =   (tag)       => document.createElement(tag);
+import { $new } from "./util.js" 
 
 class SideMenu extends HTMLElement {
     constructor() {
