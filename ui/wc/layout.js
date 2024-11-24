@@ -36,6 +36,8 @@ class SideMenu extends HTMLElement {
                 dtls.appendChild(sumr);
                 dtls.appendChild(this.makeUl(item.children));
                 li.appendChild(dtls);
+            } else {
+                li.classList.add('no-menu-children')
             }
             ul.appendChild(li);
         })

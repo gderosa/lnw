@@ -21,6 +21,10 @@ side-menu li {
     margin: 0.4em 0;
 }
 
+side-menu li.no-menu-children {
+    padding-left: 1em;
+}
+
 main-content {
     /* border: 1px #ddd dotted; */
     display: flex;
