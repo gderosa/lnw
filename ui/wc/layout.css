@@ -6,27 +6,44 @@
 }
 
 side-menu {
-    background: #def;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    margin-right: 2em;
-    padding: 1.2em 0 1.2em 0;
-    max-width: 16em;
+    margin-right: 4em;
+    padding: 1.2em;
+    padding-right: 0;
+    max-width: 12em;
     font-family: sans-serif;
+    font-size: 97%;
+    color: #222;
+    border-right: 1px grey dotted;
+}
+
+side-menu ul {
+    padding-left: 1.3em;
+    list-style-type: none;
+    list-style-position: inside;
 }
 
 side-menu li {
-    display: block;
-    margin: 0.4em 0;
+    margin-top: 0.6em;
 }
 
 side-menu li.no-menu-children {
     padding-left: 1em;
 }
 
+side-menu a {
+    color: #7ad;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+side-menu a:hover {
+    text-decoration: underline;
+}
+
 main-content {
-    /* border: 1px #ddd dotted; */
     display: flex;
     flex-direction: column;
     flex-grow: 3;

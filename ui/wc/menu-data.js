@@ -4,7 +4,7 @@ const data = [
         {title: 'Interfaces', href: 'network/interfaces.html'},
         {title: 'OpenVPN', href: 'network/openvpn.html'}
     ]},
-    {title: 'Extras (TODO)'}
+    {title: 'Extras (todo)'}
 ];
 
 export { data as menuData };
