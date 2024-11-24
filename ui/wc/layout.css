@@ -1,6 +1,6 @@
 /* https://stackoverflow.com/a/56861696 */
 
-.container {
+#container {
     display: flex;
     flex-direction: row;
 }
@@ -47,6 +47,7 @@ main-content {
     display: flex;
     flex-direction: column;
     flex-grow: 3;
+    margin-top: 1ex;
 }
 
 

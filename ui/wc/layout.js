@@ -6,8 +6,7 @@ class SideMenu extends HTMLElement {
         super();
         this.data = menuData;
     }
-    // https://iamkate.com/code/tree-views/
-    static makeUl(items) {
+    static makeUl(items) {      // -- https://iamkate.com/code/tree-views/
         const ul = $new('ul');
         items.forEach((item) => {
             const li = $new('li');
@@ -36,8 +35,7 @@ class SideMenu extends HTMLElement {
     }
     connectedCallback() {
         const ul = this.constructor.makeUl(this.data);
-        this.appendChild(ul);
+        this.appendChild(ul);  // -- https://frontendmasters.com/blog/light-dom-only/
     }
 }
 customElements.define('side-menu', SideMenu)
-
