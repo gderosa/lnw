@@ -1,3 +1,5 @@
+import { menuData } from "./menu-data.js";
+
 
 // TODO: modularize
 const $qs   =   (selector)  => document.querySelector(selector);
@@ -6,14 +8,7 @@ const $new  =   (tag)       => document.createElement(tag);
 class SideMenu extends HTMLElement {
     constructor() {
         super();
-        this.data = [
-            {title: 'Home', href: 'index.html'},
-            {title: 'Network', children: [
-                {title: 'Interfaces', href: 'network/interfaces.html'},
-                {title: 'OpenVPN', href: 'network/openvpn.html'}
-            ]},
-            {title: 'Extras (TODO)'}
-        ]
+        this.data = menuData;
     }
     // https://iamkate.com/code/tree-views/
     static makeUl(items) {

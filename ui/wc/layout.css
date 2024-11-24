@@ -10,8 +10,8 @@ side-menu {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    margin-right: 1em;
-    padding-top: 1.4em;
+    margin-right: 2em;
+    padding: 1.2em 0 1.2em 0;
     max-width: 16em;
     font-family: sans-serif;
 }
