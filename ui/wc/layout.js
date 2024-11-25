@@ -5,14 +5,19 @@ class SideMenu extends HTMLElement {
     constructor() {
         super();
         this.data = menuData;
+        this.rootPath = this.getAttribute('root_path') || '';
     }
-    static makeUl(items) {      // -- https://iamkate.com/code/tree-views/
+    connectedCallback() {
+        const ul = this.constructor.makeUl(this.data, this.rootPath);
+        this.appendChild(ul);  // -- https://frontendmasters.com/blog/light-dom-only/
+    }
+    static makeUl(items, rootPath='') {  // -- https://iamkate.com/code/tree-views/
         const ul = $new('ul');
         items.forEach((item) => {
             const li = $new('li');
             if ('href' in item) {
                 const a = $new('a');
-                a.href = item.href;
+                a.href = rootPath + item.href;
                 a.textContent = item.title;
                 li.appendChild(a);
             } else {
@@ -24,7 +29,7 @@ class SideMenu extends HTMLElement {
                 sumr.textContent = item.title;
                 li.textContent = '';
                 dtls.appendChild(sumr);
-                dtls.appendChild(this.makeUl(item.children));
+                dtls.appendChild(this.makeUl(item.children, rootPath));
                 li.appendChild(dtls);
             } else {
                 li.classList.add('no-menu-children')
@@ -32,10 +37,6 @@ class SideMenu extends HTMLElement {
             ul.appendChild(li);
         })
         return ul;
-    }
-    connectedCallback() {
-        const ul = this.constructor.makeUl(this.data);
-        this.appendChild(ul);  // -- https://frontendmasters.com/blog/light-dom-only/
     }
 }
 customElements.define('side-menu', SideMenu)
