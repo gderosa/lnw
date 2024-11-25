@@ -1,5 +1,5 @@
-import { menuData } from "./menu-data.js";
-import { $new } from "./util.js" 
+import { menuData } from "../lib/menu/data.js";
+import { $new } from "../lib/dom.js" 
 
 class SideMenu extends HTMLElement {
     constructor() {
