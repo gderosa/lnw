@@ -5,19 +5,18 @@ class SideMenu extends HTMLElement {
     constructor() {
         super();
         this.data = menuData;
-        this.rootPath = this.getAttribute('root_path') || '';
     }
     connectedCallback() {
-        const ul = this.constructor.makeUl(this.data, this.rootPath);
+        const ul = this.constructor.makeUl(this.data);
         this.appendChild(ul);  // -- https://frontendmasters.com/blog/light-dom-only/
     }
-    static makeUl(items, rootPath='') {  // -- https://iamkate.com/code/tree-views/
+    static makeUl(items) {  // -- https://iamkate.com/code/tree-views/
         const ul = $new('ul');
         items.forEach((item) => {
             const li = $new('li');
             if ('href' in item) {
                 const a = $new('a');
-                a.href = rootPath + item.href;
+                a.href = item.href;
                 a.textContent = item.title;
                 li.appendChild(a);
             } else {
@@ -29,7 +28,7 @@ class SideMenu extends HTMLElement {
                 sumr.textContent = item.title;
                 li.textContent = '';
                 dtls.appendChild(sumr);
-                dtls.appendChild(this.makeUl(item.children, rootPath));
+                dtls.appendChild(this.makeUl(item.children));
                 li.appendChild(dtls);
             } else {
                 li.classList.add('no-menu-children')
