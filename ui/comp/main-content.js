@@ -1,0 +1,1 @@
+// window.navigation.addEventListener('navigate', (e) => { console.log(e.destination.url) } )
