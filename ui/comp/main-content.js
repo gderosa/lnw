@@ -3,12 +3,18 @@ class MainContent extends HTMLElement {
         super();       
     }
     connectedCallback() {
+        window.addEventListener("load", (event) => {  // -- https://stackoverflow.com/a/62997015
+            this.hashRouter(event.currentTarget.document.location.hash);
+        });
         window.addEventListener("popstate", (event) => {  // -- https://stackoverflow.com/a/62997015
             this.hashRouter(event.currentTarget.document.location.hash);
         });
     }
     async hashRouter(hash) {
-        const path = hash.replace('#', 'views') + '.html';
+        let path = 'views/home.html';
+        if (hash) {
+            path = hash.replace('#', 'views') + '.html';
+        }
         const response = await fetch(path);
         const html = await response.text();
         this.innerHTML = html;            
