@@ -1,8 +1,8 @@
-/* https://stackoverflow.com/a/56861696 */
-
 body {
     font-family: sans-serif;
 }
+
+/* https://stackoverflow.com/a/56861696 */
 
 #container {
     display: flex;
@@ -55,7 +55,6 @@ main-content {
 }
 
 
-/* TODO this is not layout, move away the below or rename this file */
 
 table th {
     text-align: center;
