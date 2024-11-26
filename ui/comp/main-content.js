@@ -9,12 +9,15 @@ class MainContent extends HTMLElement {
             this.hashRouter(event.currentTarget.document.location.hash);
         });
     }
-    hashRouter(hash) {
-        console.log(hash);
+    async hashRouter(hash) {
+        const path = hash.replace('#', 'views') + '.html';
         const pre = $new('pre');
-        pre.textContent = hash;
-        console.log(this);
-        this.appendChild(pre);
+        pre.textContent = path;
+        this.replaceChildren(pre);
+        const response = await fetch(path);
+        const bodyText = await response.text();
+        console.log(bodyText);
+        this.innerHTML = bodyText;            
     }
 }
 customElements.define('main-content', MainContent)
