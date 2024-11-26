@@ -5,14 +5,16 @@ class MainContent extends HTMLElement {
         super();       
     }
     connectedCallback() {
-        window.addEventListener("popstate", this.router);
+        window.addEventListener("popstate", (event) => {  // -- https://stackoverflow.com/a/62997015
+            this.hashRouter(event.currentTarget.document.location.hash);
+        });
     }
-    router(event) {
-        const hash = event.currentTarget.document.location.hash;
+    hashRouter(hash) {
         console.log(hash);
         const pre = $new('pre');
         pre.textContent = hash;
         console.log(this);
+        this.appendChild(pre);
     }
 }
 customElements.define('main-content', MainContent)
