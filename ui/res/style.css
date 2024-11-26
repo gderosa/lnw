@@ -65,6 +65,27 @@ table td {
     font-family: monospace;
     text-align: right;
     background-color: #d4e2ee;
-    padding: 2px;
+    padding: 4px;
 }
 
+table td.symbol {
+    text-align: center;
+    font-size: 160%;
+    padding: 0;
+}
+
+table td ul {
+    margin: 0;
+    padding: 0
+}
+
+table td ul li {
+    display: block;
+    margin: 4px;
+}
+
+
+
+.truthy {
+    color: green;
+}

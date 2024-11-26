@@ -6,13 +6,10 @@ class NetworkInterfaces extends HTMLElement {
     }
     async connectedCallback() {
         const table = $new('table');
-        let tHead = $new('thead');
-        tHead.innerHTML = `
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-            </tr>
-        `;
+        const tHead = $new('thead');
+        tHead.innerHTML = `<tr>
+            <th>Name</th><th>Type</th><th>DHCP?</th><th>Addresses</th>
+        </tr>`;
         const tBody = $new('tbody');
         const response = await fetch('/api/v1/network/interfaces');
         const jsonData = await response.json();
@@ -26,6 +23,21 @@ class NetworkInterfaces extends HTMLElement {
             const linkType = $new('td');
             linkType.textContent = netIf.link_type;
             tr.appendChild(linkType);
+
+            const isDhcp = $new('td');
+            isDhcp.innerHTML = netIf.is_dhcp ? '&check;' : '';
+            isDhcp.classList.add('symbol', 'truthy');
+            tr.appendChild(isDhcp);
+
+            const addrs = $new('td');
+            const addrList = $new('ul');
+            netIf.ip.addresses.forEach((addr) => {
+                const li = $new('li');
+                li.innerHTML = `${addr.addr}/${addr.prefix} (${addr.scope})`;
+                addrList.appendChild(li);
+            })
+            addrs.appendChild(addrList);
+            tr.appendChild(addrs);
 
             tBody.appendChild(tr);
         })
