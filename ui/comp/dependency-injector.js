@@ -2,7 +2,7 @@ import { $new, $ } from "../lib/dom.js";
 
 class DependencyInjector extends HTMLElement {
     constructor() {
-        super();       
+        super();
     }
     connectedCallback() {
         const src = this.getAttribute('src');
@@ -14,4 +14,4 @@ class DependencyInjector extends HTMLElement {
         }
     }
 }
-customElements.define('dependency-inject', DependencyInjector);
+customElements.define('add-module', DependencyInjector);
