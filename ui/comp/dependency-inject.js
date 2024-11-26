@@ -9,7 +9,9 @@ class DependencyInjector extends HTMLElement {
         const script = $new('script');
         script.type = 'module';
         script.src = src;
-        $('head').appendChild(script);
+        if ( ! $( `head script[src='${src}']` ) ) {  // append once
+            $('head').appendChild(script);
+        }
     }
 }
 customElements.define('dependency-inject', DependencyInjector);
