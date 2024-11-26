@@ -4,7 +4,7 @@ const data = [
         {title: 'Interfaces',   href: '#/network/interfaces'},
         {title: 'OpenVPN',      href: '#/network/openvpn'}
     ]},
-    {title: 'Developers',children: [
+    {title: 'Developers', children: [
         {title: 'API Docs', children: [
             {title: 'Swagger',  href: '/docs',  external: true},
             {title: 'ReDoc',    href: '/redoc', external: true}
