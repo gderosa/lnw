@@ -3,12 +3,11 @@ class MainContent extends HTMLElement {
         super();       
     }
     connectedCallback() {
-        window.addEventListener("load", (event) => {  // -- https://stackoverflow.com/a/62997015
+        const router = (event) => {  // -- https://stackoverflow.com/a/62997015
             this.hashRouter(event.currentTarget.document.location.hash);
-        });
-        window.addEventListener("popstate", (event) => {  // -- https://stackoverflow.com/a/62997015
-            this.hashRouter(event.currentTarget.document.location.hash);
-        });
+        }
+        window.addEventListener("load",     router);
+        window.addEventListener("popstate", router);
     }
     async hashRouter(hash) {
         let path = 'views/home.html';

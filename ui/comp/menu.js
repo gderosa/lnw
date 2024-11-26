@@ -1,7 +1,7 @@
 import { menuData } from "../lib/menu/data.js";
 import { $new } from "../lib/dom.js"
 
-const EXTERNAL_URI_ICON = String.fromCharCode(10530);
+const EXTERNAL_URI_ICON = String.fromCharCode(0x2922);  // -- https://www.compart.com/en/unicode/U+2922
 
 class SideMenu extends HTMLElement {
     constructor() {
