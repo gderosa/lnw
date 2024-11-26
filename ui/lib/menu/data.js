@@ -1,13 +1,13 @@
 const data = [
     {title: 'Home', href: ''},
     {title: 'Network', children: [
-        {title: 'Interfaces', href: '#/network/interfaces'},
-        {title: 'OpenVPN', href: '#/network/openvpn'}
+        {title: 'Interfaces',   href: '#/network/interfaces'},
+        {title: 'OpenVPN',      href: '#/network/openvpn'}
     ]},
-    {title: 'Dervelopers', children: [
+    {title: 'Developers',children: [
         {title: 'API Docs', children: [
-            {title: 'Swagger', href: '/docs'},
-            {title: 'ReDoc', href: '/redoc'}
+            {title: 'Swagger',  href: '/docs',  external: true},
+            {title: 'ReDoc',    href: '/redoc', external: true}
         ]}
     ]}
 ];

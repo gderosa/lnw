@@ -1,5 +1,7 @@
 import { menuData } from "../lib/menu/data.js";
-import { $new } from "../lib/dom.js" 
+import { $new } from "../lib/dom.js"
+
+const EXTERNAL_URI_ICON = String.fromCharCode(10530);
 
 class SideMenu extends HTMLElement {
     constructor() {
@@ -18,6 +20,10 @@ class SideMenu extends HTMLElement {
                 const a = $new('a');
                 a.href = item.href;
                 a.textContent = item.title;
+                if (item.external) {
+                    a.target = '_blank';
+                    a.textContent += ` ${EXTERNAL_URI_ICON}`
+                }
                 li.appendChild(a);
             } else {
                 li.textContent = item.title
