@@ -1,5 +1,3 @@
-import { $new } from "../lib/dom.js"
-
 class MainContent extends HTMLElement {
     constructor() {
         super();       
@@ -11,13 +9,9 @@ class MainContent extends HTMLElement {
     }
     async hashRouter(hash) {
         const path = hash.replace('#', 'views') + '.html';
-        const pre = $new('pre');
-        pre.textContent = path;
-        this.replaceChildren(pre);
         const response = await fetch(path);
-        const bodyText = await response.text();
-        console.log(bodyText);
-        this.innerHTML = bodyText;            
+        const html = await response.text();
+        this.innerHTML = html;            
     }
 }
 customElements.define('main-content', MainContent)
