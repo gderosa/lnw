@@ -1,5 +1,9 @@
 /* https://stackoverflow.com/a/56861696 */
 
+body {
+    font-family: sans-serif;
+}
+
 #container {
     display: flex;
     flex-direction: row;
@@ -34,7 +38,7 @@ side-menu li.no-menu-children {
 }
 
 side-menu a {
-    color: #7ad;
+    color: #8ad;
     text-decoration: none;
     font-weight: bold;
 }
@@ -51,6 +55,17 @@ main-content {
 }
 
 
-h1, h2 {
-    color: red;
+/* TODO this is not layout, move away the below or rename this file */
+
+table th {
+    text-align: center;
+    font-size: 90%;
 }
+
+table td {
+    font-family: monospace;
+    text-align: right;
+    background-color: #eef4ff;
+    padding: 2px;
+}
+
