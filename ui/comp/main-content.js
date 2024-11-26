@@ -15,8 +15,15 @@ class MainContent extends HTMLElement {
             path = hash.replace('#', 'views') + '.html';
         }
         const response = await fetch(path);
-        const html = await response.text();
-        this.innerHTML = html;            
+        if (response.ok) {
+            const html = await response.text();
+            this.innerHTML = html;
+        } else {
+            this.innerHTML = `
+                <h2>${response.statusText}</h2>
+                <p>Status: ${response.status}.</p>
+            `
+        }
     }
 }
 customElements.define('main-content', MainContent)
