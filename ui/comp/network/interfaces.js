@@ -46,7 +46,7 @@ class NetworkInterfaces extends HTMLElement {
             netIf.ip.addresses.forEach((addr) => {
                 const li = $new('li');
                 const fullAddress = `${addr.addr}/${addr.prefix}`;
-                li.innerHTML = `${fullAddress} (${addr.scope}) `;
+                li.textContent = `${fullAddress} (${addr.scope}) `;
                 const delBtn = $new('button');
                 delBtn.classList.add('icon');
                 delBtn.addrData = addr;
@@ -57,9 +57,13 @@ class NetworkInterfaces extends HTMLElement {
                 }
                 addrList.appendChild(li);
             })
-            const ipAddrAdd = $new('li');
-            ipAddrAdd.innerHTML = '<input></input> <button class="icon">+</button>';
-            addrList.appendChild(ipAddrAdd);
+            const addLi = $new('li');
+            const addInput = $new('input');
+            const addBtn = $new('button');
+            addBtn.classList.add('icon');
+            addBtn.textContent = '+';
+            addLi.append(addInput, addBtn);
+            addrList.appendChild(addLi);
 
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
