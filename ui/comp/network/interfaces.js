@@ -23,7 +23,6 @@ class NetworkInterfaces extends HTMLElement {
     }
     async connectedCallback() {
         this.innerHTML = this.constructor.INIT_HTML;
-
         const table = $node('table', this);
         const tBody = $node('tbody', table);
 
