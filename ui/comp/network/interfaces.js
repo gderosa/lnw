@@ -39,6 +39,8 @@ class NetworkInterfaces extends HTMLElement {
             isDhcp.classList.add('symbol', 'truthy');
             tr.appendChild(isDhcp);
 
+            // TODO: break down into sub-components
+
             const addrs = $new('td');
             const addrList = $new('ul');
             netIf.ip.addresses.forEach((addr) => {
