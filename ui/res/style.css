@@ -76,6 +76,12 @@ table td.symbol {
     padding: 0;
 }
 
+table td input {
+    text-align: right;
+    font-family: monospace;
+    padding-right: 1ex;
+}
+
 table td button.icon {
     width: 2em;
     text-align: center;
