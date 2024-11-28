@@ -1,18 +1,27 @@
-import { $new } from "../../lib/dom.js"
+import { $new, $node } from "../../lib/dom.js"
+
+const TABLE_INIT = `<table>
+    <thead>
+        <tr>
+            <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>`;
 
 class NetworkInterfaces extends HTMLElement {
     constructor() {
         super();       
     }
     async connectedCallback() {
-        const table = $new('table');
-        const tHead = $new('thead');
-        tHead.innerHTML = `<tr>
-            <th>Name</th><th>Type</th><th>DHCP?</th><th>Addresses</th>
-        </tr>`;
-        const tBody = $new('tbody');
+        this.innerHTML = TABLE_INIT;
+
+        const table = $node('table', this);
+        const tBody = $node('tbody', table);
+
         const response = await fetch('/api/v1/network/interfaces');
         const jsonData = await response.json();
+
         jsonData.forEach((netIf) => {
             const tr = $new('tr');
 
@@ -41,9 +50,6 @@ class NetworkInterfaces extends HTMLElement {
 
             tBody.appendChild(tr);
         })
-        table.appendChild(tHead);
-        table.appendChild(tBody);
-        this.appendChild(table);
     }
 }
 customElements.define('network-interfaces', NetworkInterfaces);
