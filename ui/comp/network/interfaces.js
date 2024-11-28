@@ -1,20 +1,21 @@
 import { $new, $node } from "../../lib/dom.js"
 
-const TABLE_INIT = `<table>
-    <thead>
-        <tr>
-            <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>`;
-
 class NetworkInterfaces extends HTMLElement {
+    static TABLE_INIT = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>`;
+
     constructor() {
         super();       
     }
     async connectedCallback() {
-        this.innerHTML = TABLE_INIT;
+        this.innerHTML = this.constructor.TABLE_INIT;
 
         const table = $node('table', this);
         const tBody = $node('tbody', table);
