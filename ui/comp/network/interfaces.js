@@ -2,12 +2,12 @@ import { $new, $node } from "../../lib/dom.js"
 
 class NetworkInterfaces extends HTMLElement {
     static INIT_HTML = `
+        <style>
+            network-interfaces table td .link-local-address {
+                color: #707070; 
+            }
+        </style>
         <table>
-            <style>
-                network-interfaces table td .link-local-address {
-                    color: #707070; 
-                }
-            </style>
             <thead>
                 <tr>
                     <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th>
@@ -17,7 +17,6 @@ class NetworkInterfaces extends HTMLElement {
             
             </tbody>
         </table>`;
-
     constructor() {
         super();       
     }
