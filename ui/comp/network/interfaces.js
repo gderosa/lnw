@@ -1,7 +1,12 @@
 import { $new, $node } from "../../lib/dom.js"
 
 class NetworkInterfaces extends HTMLElement {
-    static TABLE_INIT = `
+    static INIT_HTML = `
+        <style>
+            .link-local-address {
+               color: #777; 
+            }
+        </style>
         <table>
             <thead>
                 <tr>
@@ -15,7 +20,7 @@ class NetworkInterfaces extends HTMLElement {
         super();       
     }
     async connectedCallback() {
-        this.innerHTML = this.constructor.TABLE_INIT;
+        this.innerHTML = this.constructor.INIT_HTML;
 
         const table = $node('table', this);
         const tBody = $node('tbody', table);
@@ -44,6 +49,9 @@ class NetworkInterfaces extends HTMLElement {
             netIf.ip.addresses.forEach((addr) => {
                 const li = $new('li');
                 li.innerHTML = `${addr.addr}/${addr.prefix} (${addr.scope})`;
+                if (addr.scope === 'link') {
+                    li.classList.add('link-local-address')
+                }
                 addrList.appendChild(li);
             })
             addrs.appendChild(addrList);
