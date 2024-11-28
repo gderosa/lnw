@@ -65,6 +65,21 @@ class NetworkInterfaces extends HTMLElement {
             const addBtn = $new('button');
             addBtn.classList.add('icon');
             addBtn.textContent = '+';
+
+            addBtn.addEventListener('click', async () => {
+                const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        addr: addInput.value.trim()
+                    })
+                })
+                const responseData = await response.json();
+                if (!response.ok) {
+                    alert(responseData.detail);
+                }
+            })
+
             addLi.append(addInput, addBtn);
             addrList.appendChild(addLi);
 

@@ -163,8 +163,11 @@ async def replace_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterfac
 
 @router.post("/network/interfaces/{name}/ip/addresses")
 async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
+    full_addr = addr.addr
+    if addr.prefix:
+        full_addr = full_addr + '/' + addr.prefix
     execute_command(
-        ['sudo', 'ip', 'addr', 'add', f'{addr.addr}/{addr.prefix}', 'dev', name],
+        ['sudo', 'ip', 'address', 'add', f'{full_addr}', 'dev', name],
         LOGGER
     )
 
