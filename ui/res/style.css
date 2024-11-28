@@ -76,6 +76,11 @@ table td.symbol {
     padding: 0;
 }
 
+table td button.icon {
+    width: 2em;
+    text-align: center;
+}
+
 table td ul {
     margin: 0;
     padding: 0

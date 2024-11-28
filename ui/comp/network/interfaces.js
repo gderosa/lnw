@@ -43,12 +43,22 @@ class NetworkInterfaces extends HTMLElement {
             const addrList = $new('ul');
             netIf.ip.addresses.forEach((addr) => {
                 const li = $new('li');
-                li.innerHTML = `${addr.addr}/${addr.prefix} (${addr.scope})`;
+                const fullAddress = `${addr.addr}/${addr.prefix}`;
+                li.innerHTML = `${fullAddress} (${addr.scope}) `;
+                const delBtn = $new('button');
+                delBtn.classList.add('icon');
+                delBtn.addrData = addr;
+                delBtn.textContent = '-';
+                li.appendChild(delBtn);
                 if (addr.scope === 'link') {
                     li.classList.add('link-local-address')
                 }
                 addrList.appendChild(li);
             })
+            const ipAddrAdd = $new('li');
+            ipAddrAdd.innerHTML = '<input></input> <button class="icon">+</button>';
+            addrList.appendChild(ipAddrAdd);
+
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
 
