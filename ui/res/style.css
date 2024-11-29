@@ -115,6 +115,6 @@ table td ul li {
     color: #666;
 }
 
-table tr td ul li.ip-address input {
+table tr td ul ipaddr-control input {
     width: calc(100% - 4em);
 }

@@ -10,27 +10,31 @@ class IPAddrControl extends HTMLElement {
 
         this.fullAddress = (this.getAttribute('address') || '').trim();
         this.ifName = this.getAttribute('ifname').trim();
+        this.scope = (this.getAttribute('scope') || '').trim();
 
         this.button = $new('button');
         this.button.classList.add('icon');
 
         if (this.fullAddress) {
-            this.textContent = this.fullAddress;
+            this.textContent = `${this.fullAddress} (${this.scope})`;
             this.button.textContent = '-';
-            this.button.addEventListener('click', async () => {
-                if (!confirm('Are you sure you want to remove the IP address?')) {
-                    return;
-                }
-                const response = await fetch(`/api/v1/network/interfaces/${thisElement.ifName}/ip/addresses/${thisElement.fullAddress}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
+            if (this.scope === 'global') {
+                this.button.addEventListener('click', async () => {
+                    if (!confirm('Are you sure you want to remove the IP address?')) {
+                        return;
+                    }
+                    const response = await fetch(`/api/v1/network/interfaces/${thisElement.ifName}/ip/addresses/${thisElement.fullAddress}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                    const responseData = await response.json();
+                    if (!response.ok) {
+                        alert(responseData.detail);
+                    }
                 })
-                const responseData = await response.json();
-                if (!response.ok) {
-                    alert(responseData.detail);
-                }
-                // await thisElement.connectedCallback();  // refresh
-            })
+            } else {
+                this.button.setAttribute('disabled', true);
+            }
         } else {
             this.input = $new('input');
             this.input.type = 'text';
@@ -56,7 +60,6 @@ class IPAddrControl extends HTMLElement {
         }  
 
         this.appendChild(this.button);
-
     }
 }
 customElements.define('ipaddr-control', IPAddrControl);
@@ -106,7 +109,7 @@ class NetworkInterfaces extends HTMLElement {
             netIf.ip.addresses.forEach((addr) => {
                 const fullAddress = `${addr.addr}/${addr.prefix}`;
                 const li = $new('li');
-                li.innerHTML = `<ipaddr-control address="${fullAddress}" ifname="${netIf.name}"></ipaddr-control>`;
+                li.innerHTML = `<ipaddr-control address="${fullAddress}" ifname="${netIf.name}" scope="${addr.scope}"></ipaddr-control>`;
                 addrList.appendChild(li);
             })
             const li = $new('li');
