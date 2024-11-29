@@ -56,6 +56,9 @@ class NetworkInterfaces extends HTMLElement {
                 delBtn.textContent = '-';
 
                 delBtn.addEventListener('click', async () => {
+                    if (!confirm('Are you sure you want to remove the IP address?')) {
+                        return;
+                    }
                     const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses/${addr.addr}/${addr.prefix}`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' }
@@ -87,11 +90,15 @@ class NetworkInterfaces extends HTMLElement {
                 if (event instanceof KeyboardEvent && event.key !== 'Enter') {
                     return;
                 }
+                const address = addInput.value.trim();
+                if (!address) {
+                    return;
+                }
                 const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        addr: addInput.value.trim()
+                        addr: address
                     })
                 })
                 const responseData = await response.json();
