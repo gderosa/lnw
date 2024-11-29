@@ -23,7 +23,8 @@ class IPAddrControl extends HTMLElement {
                     if (!confirm('Are you sure you want to remove the IP address?')) {
                         return;
                     }
-                    const response = await fetch(`/api/v1/network/interfaces/${thisElement.ifName}/ip/addresses/${thisElement.fullAddress}`, {
+                    const response = await fetch(
+                        `/api/v1/network/interfaces/${thisElement.ifName}/ip/addresses/${thisElement.fullAddress}`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' }
                     })
@@ -109,7 +110,8 @@ class NetworkInterfaces extends HTMLElement {
             netIf.ip.addresses.forEach((addr) => {
                 const fullAddress = `${addr.addr}/${addr.prefix}`;
                 const li = $new('li');
-                li.innerHTML = `<ipaddr-control address="${fullAddress}" ifname="${netIf.name}" scope="${addr.scope}"></ipaddr-control>`;
+                li.innerHTML = `<ipaddr-control ` +
+                        `address="${fullAddress}" ifname="${netIf.name}" scope="${addr.scope}"></ipaddr-control>`;
                 addrList.appendChild(li);
             })
             const li = $new('li');
