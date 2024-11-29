@@ -40,7 +40,7 @@ side-menu li.no-menu-children {
 }
 
 side-menu a {
-    color: #8ad;
+    color: #68a;
     text-decoration: none;
     font-weight: bold;
 }
@@ -76,14 +76,31 @@ table td.symbol {
     padding: 0;
 }
 
+table td input[type='text'] {
+    text-align: right;
+    font-family: monospace;
+    padding-right: 0.66em;
+}
+
+table td button.icon {
+    width: 2em;
+    text-align: center;
+    margin-left:  0.5ex;
+    margin-right: 0.5ex;
+}
+
+table td ul li button.icon:last-child {
+    margin-right: 3px;
+}
+
 table td ul {
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 table td ul li {
     display: block;
-    margin: 4px;
+    margin: 4px 0;
 }
 
 /* Outputs */
@@ -94,6 +111,10 @@ table td ul li {
 
 /* Addresses and network types */
 
-.link-local-address {
-    color: #707070;
+.link-scope-address, .host-scope-address {
+    color: #666;
+}
+
+table tr td ul li.ip-address input {
+    width: calc(100% - 4em);
 }

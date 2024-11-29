@@ -7,7 +7,7 @@ USER=$APP
 GROUP=$USER
 PASSWORD=pass
 APPDIR=/opt/$APP
-APIDIR=$APPDIR/api/fast
+APIDIR=$APPDIR/api
 VENVDIR=$HOMEDIR/.virtualenvs/$APP
 PYTHON=python3
 

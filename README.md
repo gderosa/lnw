@@ -2,11 +2,11 @@
 lnw &ndash; Linux Network Web (API and UI).
 
 ## FastAPI backend
-Plus Alpine.js UI (for now at least).
+Plus UI based on [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components).
 
 ## Opinionated
 
-* Debian centric (both PC-like and RaspberryOS/Raspbian)
+* Tested on Debian only (both PC-like and RaspberryOS/Raspbian)
 * Persists network config with **networkd/systemd**
     * Not NetworkManager
     * Not `/etc/network/interfaces`

@@ -161,6 +161,23 @@ async def replace_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterfac
     set_network_interfaces(netifs)
     return get_network_interfaces()
 
+@router.post("/network/interfaces/{name}/ip/addresses")
+async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
+    full_addr = addr.addr
+    if addr.prefix:
+        full_addr = full_addr + '/' + addr.prefix
+    execute_command(
+        ['sudo', 'ip', 'address', 'add', f'{full_addr}', 'dev', name],
+        LOGGER
+    )
+
+@router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
+async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
+    execute_command(
+        ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
+        LOGGER
+    )
+
 @router.post("/network/interfaces/persist")
 async def persist_netifs() -> List[NetworkInterface]:
     netifs = get_network_interfaces()

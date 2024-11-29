@@ -6,5 +6,5 @@ APPNAME=lnw
 VENVDIR=$HOME/.virtualenvs/$APPNAME
 
 . $VENVDIR/bin/activate
-fastapi dev --host 0.0.0.0 api/fast/main.py
+fastapi dev --host 0.0.0.0 api/main.py
 
