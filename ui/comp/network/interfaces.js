@@ -1,5 +1,67 @@
 import { $new, $node } from "../../lib/dom.js"
 
+
+class IPAddrControl extends HTMLElement {
+    constructor() {
+        super();
+    }
+    connectedCallback() {
+        const thisElement = this;
+
+        this.fullAddress = (this.getAttribute('address') || '').trim();
+        this.ifName = this.getAttribute('ifname').trim();
+
+        this.button = $new('button');
+        this.button.classList.add('icon');
+
+        if (this.fullAddress) {
+            this.textContent = this.fullAddress;
+            this.button.textContent = '-';
+            this.button.addEventListener('click', async () => {
+                if (!confirm('Are you sure you want to remove the IP address?')) {
+                    return;
+                }
+                const response = await fetch(`/api/v1/network/interfaces/${thisElement.ifName}/ip/addresses/${thisElement.fullAddress}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                const responseData = await response.json();
+                if (!response.ok) {
+                    alert(responseData.detail);
+                }
+                // await thisElement.connectedCallback();  // refresh
+            })
+        } else {
+            this.input = $new('input');
+            this.input.type = 'text';
+            this.button.textContent = '+';
+            this.button.addEventListener('click', async () => {
+                const address = thisElement.input.value.trim();
+                if (!address) {
+                    return;
+                }
+                const response = await fetch(`/api/v1/network/interfaces/${thisElement.ifName}/ip/addresses`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        addr: address
+                    })
+                })
+                const responseData = await response.json();
+                if (!response.ok) {
+                    alert(responseData.detail);
+                }
+            })
+            this.appendChild(this.input);
+        }  
+
+        this.appendChild(this.button);
+
+    }
+}
+customElements.define('ipaddr-control', IPAddrControl);
+
+
 class NetworkInterfaces extends HTMLElement {
     static INIT_HTML = `
         <table>
@@ -16,8 +78,6 @@ class NetworkInterfaces extends HTMLElement {
         super();       
     }
     async connectedCallback() {
-        const thisElement = this;
-
         this.innerHTML = this.constructor.INIT_HTML;
         const table = $node('table', this);
         const tBody = $node('tbody', table);
@@ -41,78 +101,17 @@ class NetworkInterfaces extends HTMLElement {
             isDhcp.classList.add('symbol', 'truthy');
             tr.appendChild(isDhcp);
 
-            // TODO: break down into sub-components
-
             const addrs = $new('td');
             const addrList = $new('ul');
             netIf.ip.addresses.forEach((addr) => {
-                const li = $new('li');
-                li.classList.add('ip-address');
                 const fullAddress = `${addr.addr}/${addr.prefix}`;
-                li.textContent = `${fullAddress} (${addr.scope}) `;
-                const delBtn = $new('button');
-                delBtn.classList.add('icon');
-                delBtn.addrData = addr;
-                delBtn.textContent = '-';
-
-                delBtn.addEventListener('click', async () => {
-                    if (!confirm('Are you sure you want to remove the IP address?')) {
-                        return;
-                    }
-                    const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses/${addr.addr}/${addr.prefix}`, {
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' }
-                    })
-                    const responseData = await response.json();
-                    if (!response.ok) {
-                        alert(responseData.detail);
-                    }
-                    await thisElement.connectedCallback();  // refresh
-                })    
-
-                if (addr.scope !== 'global') {
-                    delBtn.setAttribute('disabled', true)
-                }
-                li.appendChild(delBtn);
-                li.classList.add(`${addr.scope}-scope-address`);
+                const li = $new('li');
+                li.innerHTML = `<ipaddr-control address="${fullAddress}" ifname="${netIf.name}"></ipaddr-control>`;
                 addrList.appendChild(li);
             })
-            const addLi = $new('li');
-            addLi.classList.add('ip-address');
-            const addInput = $new('input');
-            addInput.type = 'text';
-            const addBtn = $new('button');
-            addBtn.classList.add('icon');
-            addBtn.textContent = '+';
-
-            // TODO: <form> and submit instead
-            const ipAddrAdd = async (event) => {
-                if (event instanceof KeyboardEvent && event.key !== 'Enter') {
-                    return;
-                }
-                const address = addInput.value.trim();
-                if (!address) {
-                    return;
-                }
-                const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        addr: address
-                    })
-                })
-                const responseData = await response.json();
-                if (!response.ok) {
-                    alert(responseData.detail);
-                }
-                await thisElement.connectedCallback();  // refresh
-            }
-
-            addBtn.addEventListener('click', ipAddrAdd);
-            addInput.addEventListener('keydown', ipAddrAdd);
-
-            addLi.append(addInput, addBtn);
-            addrList.appendChild(addLi);
+            const li = $new('li');
+            li.innerHTML = `<ipaddr-control ifname="${netIf.name}"></ipaddr-control>`
+            addrList.appendChild(li);
 
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
