@@ -90,7 +90,7 @@ table td button.icon {
 }
 
 table td ul li button.icon:last-child {
-    margin-right: 1px;
+    margin-right: 2px;
 }
 
 table td ul {

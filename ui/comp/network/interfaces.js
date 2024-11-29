@@ -61,11 +61,10 @@ class NetworkInterfaces extends HTMLElement {
                         headers: { 'Content-Type': 'application/json' }
                     })
                     const responseData = await response.json();
-                    if (response.ok) {
-                        await thisElement.connectedCallback();  // refresh
-                    } else {
+                    if (!response.ok) {
                         alert(responseData.detail);
                     }
+                    await thisElement.connectedCallback();  // refresh
                 })    
 
                 if (addr.scope !== 'global') {
@@ -86,17 +85,16 @@ class NetworkInterfaces extends HTMLElement {
             addBtn.addEventListener('click', async () => {
                 const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         addr: addInput.value.trim()
                     })
                 })
                 const responseData = await response.json();
-                if (response.ok) {
-                    await thisElement.connectedCallback();  // refresh
-                } else {
+                if (!response.ok) {
                     alert(responseData.detail);
                 }
+                await thisElement.connectedCallback();  // refresh
             })
 
             addLi.append(addInput, addBtn);
