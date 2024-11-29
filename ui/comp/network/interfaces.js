@@ -52,10 +52,11 @@ class NetworkInterfaces extends HTMLElement {
                 delBtn.classList.add('icon');
                 delBtn.addrData = addr;
                 delBtn.textContent = '-';
-                li.appendChild(delBtn);
-                if (addr.scope === 'link') {
-                    li.classList.add('link-local-address');
+                if (addr.scope !== 'global') {
+                    delBtn.setAttribute('disabled', true)
                 }
+                li.appendChild(delBtn);
+                li.classList.add(`${addr.scope}-scope-address`);
                 addrList.appendChild(li);
             })
             const addLi = $new('li');

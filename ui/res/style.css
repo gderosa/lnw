@@ -111,8 +111,8 @@ table td ul li {
 
 /* Addresses and network types */
 
-.link-local-address {
-    color: #707070;
+.link-scope-address, .host-scope-address {
+    color: #666;
 }
 
 table tr td ul li.ip-address input {
