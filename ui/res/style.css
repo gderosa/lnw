@@ -79,7 +79,7 @@ table td.symbol {
 table td input[type='text'] {
     text-align: right;
     font-family: monospace;
-    padding-right: 0.66em;
+    padding-right: 0.4em;
 }
 
 table td button.icon {

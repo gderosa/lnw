@@ -130,5 +130,10 @@ class NetworkInterfaces extends HTMLElement {
             tBody.appendChild(tr);
         })
     }
+    async refreshInterface(ifName) {
+        const response = await fetch('/api/v1/network/interfaces/' + ifName);
+        const netIf = await response.json();
+        console.log(netIf);
+    }
 }
 customElements.define('network-interfaces', NetworkInterfaces);
