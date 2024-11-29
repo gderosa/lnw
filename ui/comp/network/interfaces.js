@@ -16,6 +16,8 @@ class NetworkInterfaces extends HTMLElement {
         super();       
     }
     async connectedCallback() {
+        const thisElement = this;
+
         this.innerHTML = this.constructor.INIT_HTML;
         const table = $node('table', this);
         const tBody = $node('tbody', table);
@@ -76,7 +78,9 @@ class NetworkInterfaces extends HTMLElement {
                     })
                 })
                 const responseData = await response.json();
-                if (!response.ok) {
+                if (response.ok) {
+                    await thisElement.connectedCallback();
+                } else {
                     alert(responseData.detail);
                 }
             })
