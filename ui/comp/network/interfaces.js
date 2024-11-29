@@ -54,6 +54,20 @@ class NetworkInterfaces extends HTMLElement {
                 delBtn.classList.add('icon');
                 delBtn.addrData = addr;
                 delBtn.textContent = '-';
+
+                delBtn.addEventListener('click', async () => {
+                    const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses/${addr.addr}/${addr.prefix}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                    const responseData = await response.json();
+                    if (response.ok) {
+                        await thisElement.connectedCallback();  // refresh
+                    } else {
+                        alert(responseData.detail);
+                    }
+                })    
+
                 if (addr.scope !== 'global') {
                     delBtn.setAttribute('disabled', true)
                 }
@@ -79,7 +93,7 @@ class NetworkInterfaces extends HTMLElement {
                 })
                 const responseData = await response.json();
                 if (response.ok) {
-                    await thisElement.connectedCallback();
+                    await thisElement.connectedCallback();  // refresh
                 } else {
                     alert(responseData.detail);
                 }

@@ -171,6 +171,13 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
         LOGGER
     )
 
+@router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
+async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
+    execute_command(
+        ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
+        LOGGER
+    )
+
 @router.post("/network/interfaces/persist")
 async def persist_netifs() -> List[NetworkInterface]:
     netifs = get_network_interfaces()
