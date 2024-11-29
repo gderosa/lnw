@@ -82,7 +82,11 @@ class NetworkInterfaces extends HTMLElement {
             addBtn.classList.add('icon');
             addBtn.textContent = '+';
 
-            addBtn.addEventListener('click', async () => {
+            // TODO: <form> and submit instead
+            const ipAddrAdd = async (event) => {
+                if (event instanceof KeyboardEvent && event.key !== 'Enter') {
+                    return;
+                }
                 const response = await fetch(`/api/v1/network/interfaces/${netIf.name}/ip/addresses`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -95,7 +99,10 @@ class NetworkInterfaces extends HTMLElement {
                     alert(responseData.detail);
                 }
                 await thisElement.connectedCallback();  // refresh
-            })
+            }
+
+            addBtn.addEventListener('click', ipAddrAdd);
+            addInput.addEventListener('keydown', ipAddrAdd);
 
             addLi.append(addInput, addBtn);
             addrList.appendChild(addLi);
