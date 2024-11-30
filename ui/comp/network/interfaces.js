@@ -102,19 +102,23 @@ class NetworkInterfaces extends HTMLElement {
             tr.setAttribute('ifname', netIf.name);
 
             const name = $new('td');
+            name.setAttribute('col', 'name');
             name.textContent = netIf.name;
             tr.appendChild(name);
 
             const linkType = $new('td');
+            linkType.setAttribute('col', 'link-type');
             linkType.textContent = netIf.link_type;
             tr.appendChild(linkType);
 
             const isDhcp = $new('td');
+            isDhcp.setAttribute('col', 'is-dhcp');
             isDhcp.innerHTML = netIf.is_dhcp ? '&check;' : '';
             isDhcp.classList.add('symbol', 'truthy');
             tr.appendChild(isDhcp);
 
             const addrs = $new('td');
+            addrs.setAttribute('col', 'ip-addresses');
             const addrList = $new('ul');
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
@@ -132,11 +136,7 @@ class NetworkInterfaces extends HTMLElement {
             netIf = await response.json();
         }
 
-        const tds = $nodes(`table tr[ifname='${ifName}'] td`, this);
-
-        // TODO: only IP addrs for now... cover DHCP, up/down etc.
-
-        const addrList = $node('ul', tds[3]);
+        const addrList = $node(`table tr[ifname='${ifName}'] td[col='ip-addresses'] ul`, this);
         addrList.innerHTML = '';
         netIf.ip.addresses.forEach((addr) => {
             const fullAddress = `${addr.addr}/${addr.prefix}`;

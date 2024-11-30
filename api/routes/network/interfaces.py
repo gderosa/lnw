@@ -199,6 +199,10 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
     execute_command(
+        ['sudo', 'sysctl', '-w', f'net.ipv4.conf.{name}.promote_secondaries=1'],
+        LOGGER
+    )
+    execute_command(
         ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
         LOGGER
     )
