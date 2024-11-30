@@ -133,6 +133,9 @@ class NetworkInterfaces extends HTMLElement {
         }
 
         const tds = $nodes(`table tr[ifname='${ifName}'] td`, this);
+
+        // TODO: only IP addrs for now... cover DHCP, up/down etc.
+
         const addrList = $node('ul', tds[3]);
         addrList.innerHTML = '';
         netIf.ip.addresses.forEach((addr) => {
