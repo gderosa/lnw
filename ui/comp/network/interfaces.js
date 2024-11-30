@@ -1,4 +1,4 @@
-import { $new, $node, $byId } from "../../lib/dom.js"
+import { $new, $node, $nodes, $byId } from "../../lib/dom.js"
 
 
 class IPAddrControl extends HTMLElement {
@@ -37,7 +37,7 @@ class IPAddrControl extends HTMLElement {
                     if (!response.ok) {
                         alert(responseData.detail);
                     }
-                    $byId(thisElement.networkInterfacesId).connectedCallback();  // refresh
+                    $byId(thisElement.networkInterfacesId).refreshInterface(thisElement.ifName);
                 })
             } else {
                 this.button.setAttribute('disabled', true);
@@ -65,7 +65,7 @@ class IPAddrControl extends HTMLElement {
                 if (!response.ok) {
                     alert(responseData.detail);
                 }
-                $byId(thisElement.networkInterfacesId).connectedCallback();  // refresh
+                $byId(thisElement.networkInterfacesId).refreshInterface(thisElement.ifName);
             })
         }
         this.appendChild(this.form);
@@ -99,6 +99,7 @@ class NetworkInterfaces extends HTMLElement {
 
         jsonData.forEach((netIf) => {
             const tr = $new('tr');
+            tr.setAttribute('ifname', netIf.name);
 
             const name = $new('td');
             name.textContent = netIf.name;
@@ -138,7 +139,23 @@ class NetworkInterfaces extends HTMLElement {
     async refreshInterface(ifName) {
         const response = await fetch('/api/v1/network/interfaces/' + ifName);
         const netIf = await response.json();
-        console.log(netIf);
+
+        const tds = $nodes(`table tr[ifname='${ifName}'] td`, this);
+        const addrList = $node('ul', tds[3]);
+        addrList.innerHTML = '';
+        netIf.ip.addresses.forEach((addr) => {
+            const fullAddress = `${addr.addr}/${addr.prefix}`;
+            const li = $new('li');
+            li.innerHTML = `<ipaddr-control 
+                address="${fullAddress}" 
+                ifname="${netIf.name}"
+                scope="${addr.scope}"
+                network-interfaces-id="${this.getAttribute('id')}"></ipaddr-control>`;
+            addrList.appendChild(li);
+        })
+        const li = $new('li');
+        li.innerHTML = `<ipaddr-control ifname="${netIf.name}" network-interfaces-id="${this.getAttribute('id')}"></ipaddr-control>`
+        addrList.appendChild(li);
     }
 }
 customElements.define('network-interfaces', NetworkInterfaces);
