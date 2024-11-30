@@ -111,7 +111,7 @@ table td ul li {
 
 /* Addresses and network types */
 
-.link-scope-address, .host-scope-address {
+ipaddr-control[scope="link"], ipaddr-control[scope="host"] {
     color: #666;
 }
 
