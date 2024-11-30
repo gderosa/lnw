@@ -198,6 +198,9 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
 
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
+    # https://serverfault.com/questions/486872/remove-ip-with-ip-command-in-linux
+    # TODO: /etc/sysctl.d/lnw.conf installed via setup.sh ?
+    # TODO: text content: net.ipv4.conf.all.promote_secondaries=1
     execute_command(
         ['sudo', 'sysctl', '-w', f'net.ipv4.conf.{name}.promote_secondaries=1'],
         LOGGER
