@@ -116,29 +116,21 @@ class NetworkInterfaces extends HTMLElement {
 
             const addrs = $new('td');
             const addrList = $new('ul');
-            netIf.ip.addresses.forEach((addr) => {
-                const fullAddress = `${addr.addr}/${addr.prefix}`;
-                const li = $new('li');
-                li.innerHTML = `<ipaddr-control 
-                    address="${fullAddress}" 
-                    ifname="${netIf.name}"
-                    scope="${addr.scope}"
-                    network-interfaces-id="${this.getAttribute('id')}"></ipaddr-control>`;
-                addrList.appendChild(li);
-            })
-            const li = $new('li');
-            li.innerHTML = `<ipaddr-control ifname="${netIf.name}" network-interfaces-id="${this.getAttribute('id')}"></ipaddr-control>`
-            addrList.appendChild(li);
-
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
 
             tBody.appendChild(tr);
+            this.refreshInterface(netIf.name, {data: netIf});
         })
     }
-    async refreshInterface(ifName) {
-        const response = await fetch('/api/v1/network/interfaces/' + ifName);
-        const netIf = await response.json();
+    async refreshInterface(ifName, opts={}) {
+        let netIf = undefined;
+        if (opts.data) {
+            netIf = opts.data;
+        } else {
+            const response = await fetch('/api/v1/network/interfaces/' + ifName);
+            netIf = await response.json();
+        }
 
         const tds = $nodes(`table tr[ifname='${ifName}'] td`, this);
         const addrList = $node('ul', tds[3]);
