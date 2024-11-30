@@ -13,14 +13,17 @@ class IPAddrControl extends HTMLElement {
         this.scope = (this.getAttribute('scope') || '').trim();
         this.networkInterfacesId = (this.getAttribute('network-interfaces-id') || '').trim();
 
+        this.form = $new('form');
         this.button = $new('button');
         this.button.classList.add('icon');
 
         if (this.fullAddress) {
-            this.textContent = `${this.fullAddress} (${this.scope})`;
+            this.form.textContent = `${this.fullAddress} (${this.scope})`;
+            this.form.appendChild(this.button);
             this.button.textContent = '-';
             if (this.scope === 'global') {
-                this.button.addEventListener('click', async () => {
+                this.form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
                     if (!confirm('Are you sure you want to remove the IP address?')) {
                         return;
                     }
@@ -41,7 +44,9 @@ class IPAddrControl extends HTMLElement {
         } else {
             this.input = $new('input');
             this.input.type = 'text';
+            this.input.name = `ip-address-add[${this.ifName}]`;  // enable history/autofill in browsers, unique enough
             this.button.textContent = '+';
+            this.form.append(this.input, this.button)
             this.button.addEventListener('click', async () => {
                 const address = thisElement.input.value.trim();
                 if (!address) {
@@ -60,10 +65,8 @@ class IPAddrControl extends HTMLElement {
                 }
                 $byId(thisElement.networkInterfacesId).connectedCallback();  // refresh
             })
-            this.appendChild(this.input);
-        }  
-
-        this.appendChild(this.button);
+        }
+        this.appendChild(this.form);
     }
 }
 customElements.define('ipaddr-control', IPAddrControl);
