@@ -14,6 +14,7 @@ class IPAddrControl extends HTMLElement {
         this.networkInterfacesId = (this.getAttribute('network-interfaces-id') || '').trim();
 
         this.form = $new('form');
+        this.form.method = 'POST';  // "preserve" address bar
         this.button = $new('button');
         this.button.classList.add('icon');
 
@@ -47,7 +48,8 @@ class IPAddrControl extends HTMLElement {
             this.input.name = `ip-address-add[${this.ifName}]`;  // enable history/autofill in browsers, unique enough
             this.button.textContent = '+';
             this.form.append(this.input, this.button)
-            this.button.addEventListener('click', async () => {
+            this.button.addEventListener('click', async (event) => {
+                event.preventDefault();
                 const address = thisElement.input.value.trim();
                 if (!address) {
                     return;
