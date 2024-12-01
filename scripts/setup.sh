@@ -28,7 +28,9 @@ VENVDIR=$HOMEDIR/.virtualenvs/$APPNAME
 
 chmod o-rwx $DATADIR
 
-install -v $APPDIR/scripts/files/sudoers /etc/sudoers.d/$USERNAME
+install -v $APPDIR/scripts/files/sudoers        /etc/sudoers.d/$USERNAME
+install -v $APPDIR/scripts/files/sysctl.conf    /etc/sysctl.d/$APPNAME.conf
+systemctl force-reload procps
 
 su $USERNAME -c "$PYTHON -m venv $VENVDIR"
 su $USERNAME -c "
