@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from enum import Enum
 import json
 import logging
@@ -99,7 +99,7 @@ def execute_command(cmdline: List[str], logger=None):
         raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
 
 
-def get_network_interfaces() -> NetworkInterface:
+def get_network_interfaces() -> List[NetworkInterface]:
     iproute2_data = json.loads(subprocess.check_output(['ip', '--json', 'address', 'show']))
     netifs = []
     for iproute2_iface in iproute2_data:
@@ -121,6 +121,27 @@ def get_network_interfaces() -> NetworkInterface:
             ))
         netifs.append(netif)
     return netifs
+
+
+def get_network_interface(name: str) -> Optional[NetworkInterface]:
+    iproute2_iface = json.loads(subprocess.check_output(['ip', '--json', 'address', 'show', 'dev', name]))[0]
+    netif = NetworkInterface(
+        name=iproute2_iface['ifname'],
+        flags=iproute2_iface['flags'],
+        link_type=iproute2_iface['link_type'],
+        ip=IPData(
+            addresses=[]
+        )
+    )
+    for addr_info_el in iproute2_iface['addr_info']:
+        netif.ip.addresses.append(IPAddress(
+            addr=addr_info_el['local'],
+            prefix=addr_info_el['prefixlen'],
+            family=addr_info_el['family'],
+            scope=addr_info_el['scope'],
+            dynamic=(addr_info_el['dynamic'] if 'dynamic' in addr_info_el else False)
+        ))
+    return netif
 
 
 def set_network_interfaces(netifs: List[NetworkInterface]):
@@ -156,6 +177,10 @@ router = APIRouter(
 async def read_netifs() -> List[NetworkInterface] :
     return get_network_interfaces()
 
+@router.get("/network/interfaces/{name}")
+async def read_netif(name: str) -> Optional[NetworkInterface]:
+    return get_network_interface(name)
+
 @router.put("/network/interfaces")
 async def replace_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterface] :
     set_network_interfaces(netifs)
@@ -173,6 +198,13 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
 
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
+    # https://serverfault.com/questions/486872/remove-ip-with-ip-command-in-linux
+    # DONE: /etc/sysctl.d/lnw.conf installed via setup.sh
+    # DONE: text content: net.ipv4.conf.all.promote_secondaries=1
+    # execute_command(
+    #     ['sudo', 'sysctl', '-w', f'net.ipv4.conf.{name}.promote_secondaries=1'],
+    #     LOGGER
+    # )
     execute_command(
         ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
         LOGGER
