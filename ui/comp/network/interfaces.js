@@ -102,7 +102,7 @@ class IfUpDownControl extends HTMLElement {
     }
     async update(event) {
         const upDown = this.checkbox.checked ? 'up' : 'down';
-        if (upDown === 'up' || confirm(`Are you sure to bring ${this.ifName} ${upDown}?`)) {
+        if (upDown === 'up' || confirm(`Are you sure you want to bring ${this.ifName} ${upDown}?`)) {
             const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
                 method: 'POST'
             });
