@@ -90,15 +90,17 @@ class IfUpDownControl extends HTMLElement {
         const response = await fetch('/api/v1/network/interfaces/' + this.ifName);
         const netIfData = await response.json();
         if (netIfData.flags.includes('UP')) {
+            this.checkbox.checked = true;
             this.checkbox.setAttribute('checked', '');
         } else {
+            this.checkbox.checked = false;
             this.checkbox.removeAttribute('checked');
         }
     }
     async refreshInterface() {
         await this.networkInterfaces.refreshInterface(this.ifName);
     }
-    async update() {
+    async update(event) {
         const upDown = this.checkbox.checked ? 'up' : 'down';
         if (upDown === 'up' || confirm(`Are you sure to bring ${this.ifName} ${upDown}?`)) {
             const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
@@ -200,7 +202,7 @@ class NetworkInterfaces extends HTMLElement {
         addrList.appendChild(li);
 
         // Refresh status up/down checkbox
-        const upDown = $node(`table tr[ifname='${ifName}'] td[col='is-up'] ifupdown-control`, this);;
+        const upDown = $node(`table tr[ifname='${ifName}'] td[col='is-up'] ifupdown-control`, this);
         await upDown.refresh();
     }
 }
