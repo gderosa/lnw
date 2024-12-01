@@ -97,8 +97,8 @@ class IfUpDownControl extends HTMLElement {
             this.checkbox.removeAttribute('checked');
         }
     }
-    async refreshInterface() {
-        await this.networkInterfaces.refreshInterface(this.ifName);
+    refreshInterface() {
+        return this.networkInterfaces.refreshInterface(this.ifName);
     }
     async update(event) {
         const upDown = this.checkbox.checked ? 'up' : 'down';
@@ -110,7 +110,11 @@ class IfUpDownControl extends HTMLElement {
             if (!response.ok) {
                 alert(responseData.detail);
             }
+        } else if (upDown === 'down') {
+            // not confirmed, bring back
+            this.checkbox.checked = true;
         }
+        // in any case verify net iface facts
         await this.refreshInterface();
     }
 }
