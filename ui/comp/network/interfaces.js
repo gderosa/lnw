@@ -1,4 +1,4 @@
-import { $new, $node, $nodes, $byId } from "../../lib/dom.js"
+import { $new, $node, $byId } from "../../lib/dom.js"
 
 
 class IPAddrControl extends HTMLElement {
