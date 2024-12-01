@@ -19,6 +19,10 @@ class AddressFamily (str, Enum):
     IPv4 = 'inet'
     IPv6 = 'inet6'
 
+class UpDown (str, Enum):
+    up = 'up'
+    down = 'down'
+
 
 class IPAddress(BaseModel):
     family:     AddressFamily   | None      = None
@@ -181,6 +185,7 @@ async def read_netifs() -> List[NetworkInterface] :
 async def read_netif(name: str) -> Optional[NetworkInterface]:
     return get_network_interface(name)
 
+# Not used in the new UI?
 @router.put("/network/interfaces")
 async def replace_netifs(netifs: List[NetworkInterface]) -> List[NetworkInterface] :
     set_network_interfaces(netifs)
@@ -193,6 +198,13 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
         full_addr = full_addr + '/' + addr.prefix
     execute_command(
         ['sudo', 'ip', 'address', 'add', f'{full_addr}', 'dev', name],
+        LOGGER
+    )
+
+@router.post("/network/interfaces/{name}/ip/link/set/{updown}")
+async def netif_ip_link_set_updown(name: str, updown: UpDown) -> None:
+    execute_command(
+        ['sudo', 'ip', 'link', 'set', updown, 'dev', name],
         LOGGER
     )
 

@@ -70,7 +70,7 @@ table td {
     padding: 4px;
 }
 
-table td.symbol {
+table td.symbol, table td.singlecheck {
     text-align: center;
     font-size: 160%;
     padding: 0;
@@ -101,6 +101,10 @@ table td ul {
 table td ul li {
     display: block;
     margin: 4px 0;
+}
+
+input[type="checkbox"] {
+    margin: 3px;
 }
 
 /* Outputs */

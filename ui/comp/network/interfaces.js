@@ -1,4 +1,4 @@
-import { $new, $node, $nodes, $byId } from "../../lib/dom.js"
+import { $new, $node, $byId } from "../../lib/dom.js"
 
 
 class IPAddrControl extends HTMLElement {
@@ -73,13 +73,59 @@ class IPAddrControl extends HTMLElement {
 }
 customElements.define('ipaddr-control', IPAddrControl);
 
+class IfUpDownControl extends HTMLElement {
+    constructor() {
+        super();
+        this.ifName = this.getAttribute('ifname');
+    }
+    async connectedCallback() {
+        this.networkInterfaces = this.closest('network-interfaces');
+        this.checkbox = $new('input');
+        this.checkbox.setAttribute('type', 'checkbox');
+        this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
+        this.appendChild(this.checkbox);
+        await this.refresh();
+    }
+    async refresh() {
+        const response = await fetch('/api/v1/network/interfaces/' + this.ifName);
+        const netIfData = await response.json();
+        if (netIfData.flags.includes('UP')) {
+            this.checkbox.checked = true;
+            this.checkbox.setAttribute('checked', '');
+        } else {
+            this.checkbox.checked = false;
+            this.checkbox.removeAttribute('checked');
+        }
+    }
+    refreshInterface() {
+        return this.networkInterfaces.refreshInterface(this.ifName);
+    }
+    async update(event) {
+        const upDown = this.checkbox.checked ? 'up' : 'down';
+        if (upDown === 'up' || confirm(`Are you sure to bring ${this.ifName} ${upDown}?`)) {
+            const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
+                method: 'POST'
+            });
+            const responseData = await response.json();
+            if (!response.ok) {
+                alert(responseData.detail);
+            }
+        } else if (upDown === 'down') {
+            // not confirmed, bring back
+            this.checkbox.checked = true;
+        }
+        // in any case verify net iface facts
+        await this.refreshInterface();
+    }
+}
+customElements.define('ifupdown-control', IfUpDownControl);
 
 class NetworkInterfaces extends HTMLElement {
     static INIT_HTML = `
         <table>
             <thead>
                 <tr>
-                    <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th>
+                    <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th> <th>Up?</th>
                 </tr>
             </thead>
             <tbody>
@@ -123,6 +169,12 @@ class NetworkInterfaces extends HTMLElement {
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
 
+            const isUp = $new('td');
+            isUp.setAttribute('col', 'is-up');
+            isUp.classList.add('singlecheck');
+            isUp.innerHTML = `<ifupdown-control ifname="${netIf.name}"></ifupdown-control>`;
+            tr.appendChild(isUp);
+
             tBody.appendChild(tr);
             this.refreshInterface(netIf.name, {data: netIf});
         })
@@ -136,6 +188,7 @@ class NetworkInterfaces extends HTMLElement {
             netIf = await response.json();
         }
 
+        // Refresh IP addresses
         const addrList = $node(`table tr[ifname='${ifName}'] td[col='ip-addresses'] ul`, this);
         addrList.innerHTML = '';
         netIf.ip.addresses.forEach((addr) => {
@@ -151,6 +204,10 @@ class NetworkInterfaces extends HTMLElement {
         const li = $new('li');
         li.innerHTML = `<ipaddr-control ifname="${netIf.name}" network-interfaces-id="${this.getAttribute('id')}"></ipaddr-control>`
         addrList.appendChild(li);
+
+        // Refresh status up/down checkbox
+        const upDown = $node(`table tr[ifname='${ifName}'] td[col='is-up'] ifupdown-control`, this);
+        await upDown.refresh();
     }
 }
 customElements.define('network-interfaces', NetworkInterfaces);
