@@ -73,13 +73,22 @@ class IPAddrControl extends HTMLElement {
 }
 customElements.define('ipaddr-control', IPAddrControl);
 
+class IfUpDownControl extends HTMLElement {
+    constructor() {
+        super();
+    }
+    async connectedCallback() {
+        this.innerHTML = '<input type="checkbox"></input>';
+    }
+}
+customElements.define('ifupdown-control', IfUpDownControl);
 
 class NetworkInterfaces extends HTMLElement {
     static INIT_HTML = `
         <table>
             <thead>
                 <tr>
-                    <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th>
+                    <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th> <th>Up?</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,6 +131,12 @@ class NetworkInterfaces extends HTMLElement {
             const addrList = $new('ul');
             addrs.appendChild(addrList);
             tr.appendChild(addrs);
+
+            const isUp = $new('td');
+            isUp.setAttribute('col', 'is-up');
+            isUp.classList.add('singlecheck');
+            isUp.innerHTML = `<ifupdown-control ifname="${netIf.name}"></ifupdown-control>`;
+            tr.appendChild(isUp);
 
             tBody.appendChild(tr);
             this.refreshInterface(netIf.name, {data: netIf});
