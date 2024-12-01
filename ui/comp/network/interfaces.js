@@ -76,9 +76,32 @@ customElements.define('ipaddr-control', IPAddrControl);
 class IfUpDownControl extends HTMLElement {
     constructor() {
         super();
+        this.ifName = this.getAttribute('ifname');
     }
-    async connectedCallback() {
-        this.innerHTML = '<input type="checkbox"></input>';
+    connectedCallback() {
+        this.checkbox = $new('input')
+        this.checkbox.setAttribute('type', 'checkbox');
+        this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
+        this.appendChild(this.checkbox);
+        this.refresh();
+    }
+    async refresh() {
+        const response = await fetch('/api/v1/network/interfaces/' + this.ifName);
+        const netIfData = await response.json();
+        if (netIfData.flags.includes('UP')) {
+            this.checkbox.setAttribute('checked', '');
+        }
+    }
+    async update(event) {
+        const upDown = this.checkbox.checked ? 'up' : 'down';
+        const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
+            method: 'POST'
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+            alert(responseData.detail);
+        }
+        this.refresh();
     }
 }
 customElements.define('ifupdown-control', IfUpDownControl);
