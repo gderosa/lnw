@@ -97,8 +97,8 @@ class IfUpDownControl extends HTMLElement {
             this.checkbox.removeAttribute('checked');
         }
     }
-    refreshInterface() {
-        return this.networkInterfaces.refreshInterface(this.ifName);
+    async refreshInterface() {
+        return await this.networkInterfaces.refreshInterface(this.ifName);
     }
     async update(event) {
         const upDown = this.checkbox.checked ? 'up' : 'down';
