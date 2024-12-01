@@ -79,7 +79,9 @@ class IfUpDownControl extends HTMLElement {
         this.ifName = this.getAttribute('ifname');
     }
     connectedCallback() {
-        this.checkbox = $new('input')
+        this.networkInterfaces = this.closest('network-interfaces');
+        console.log(this.networkInterfaces);
+        this.checkbox = $new('input');
         this.checkbox.setAttribute('type', 'checkbox');
         this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
         this.appendChild(this.checkbox);
@@ -92,16 +94,21 @@ class IfUpDownControl extends HTMLElement {
             this.checkbox.setAttribute('checked', '');
         }
     }
-    async update(event) {
+    async refreshInterface() {
+        await this.networkInterfaces.refreshInterface(this.ifName);
+    }
+    async update() {
         const upDown = this.checkbox.checked ? 'up' : 'down';
-        const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
-            method: 'POST'
-        });
-        const responseData = await response.json();
-        if (!response.ok) {
-            alert(responseData.detail);
+        if (upDown === 'up' || confirm(`Are you sure to bring ${this.ifName} ${upDown}?`)) {
+            const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
+                method: 'POST'
+            });
+            const responseData = await response.json();
+            if (!response.ok) {
+                alert(responseData.detail);
+            }
         }
-        this.refresh();
+        await this.refreshInterface();
     }
 }
 customElements.define('ifupdown-control', IfUpDownControl);
@@ -174,6 +181,7 @@ class NetworkInterfaces extends HTMLElement {
             netIf = await response.json();
         }
 
+        // Refresh IP addresses
         const addrList = $node(`table tr[ifname='${ifName}'] td[col='ip-addresses'] ul`, this);
         addrList.innerHTML = '';
         netIf.ip.addresses.forEach((addr) => {
@@ -189,6 +197,10 @@ class NetworkInterfaces extends HTMLElement {
         const li = $new('li');
         li.innerHTML = `<ipaddr-control ifname="${netIf.name}" network-interfaces-id="${this.getAttribute('id')}"></ipaddr-control>`
         addrList.appendChild(li);
+
+        // Refresh status up/down checkbox
+        const upDown = $node(`table tr[ifname='${ifName}'] td[col='is-up'] ifupdown-control`, this);;
+        upDown.refresh();
     }
 }
 customElements.define('network-interfaces', NetworkInterfaces);
