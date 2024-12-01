@@ -78,20 +78,21 @@ class IfUpDownControl extends HTMLElement {
         super();
         this.ifName = this.getAttribute('ifname');
     }
-    connectedCallback() {
+    async connectedCallback() {
         this.networkInterfaces = this.closest('network-interfaces');
-        console.log(this.networkInterfaces);
         this.checkbox = $new('input');
         this.checkbox.setAttribute('type', 'checkbox');
         this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
         this.appendChild(this.checkbox);
-        this.refresh();
+        await this.refresh();
     }
     async refresh() {
         const response = await fetch('/api/v1/network/interfaces/' + this.ifName);
         const netIfData = await response.json();
         if (netIfData.flags.includes('UP')) {
             this.checkbox.setAttribute('checked', '');
+        } else {
+            this.checkbox.removeAttribute('checked');
         }
     }
     async refreshInterface() {
@@ -200,7 +201,7 @@ class NetworkInterfaces extends HTMLElement {
 
         // Refresh status up/down checkbox
         const upDown = $node(`table tr[ifname='${ifName}'] td[col='is-up'] ifupdown-control`, this);;
-        upDown.refresh();
+        await upDown.refresh();
     }
 }
 customElements.define('network-interfaces', NetworkInterfaces);
