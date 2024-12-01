@@ -5,4 +5,4 @@ lnw ALL = (ALL:ALL) ALL
 
 lnw ALL = NOPASSWD: /usr/sbin/ip address add *
 lnw ALL = NOPASSWD: /usr/sbin/ip address delete *
-lnw ALL = NOPASSWD: /usr/sbin/sysctl -w net.ipv4.conf.*
+# lnw ALL = NOPASSWD: /usr/sbin/sysctl -w net.ipv4.conf.*
