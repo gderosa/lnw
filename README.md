@@ -7,9 +7,5 @@ Plus UI based on [Web Components](https://developer.mozilla.org/en-US/docs/Web/A
 ## Opinionated
 
 * Tested on Debian only (both PC-like and RaspberryOS/Raspbian)
-* Persists network config with **networkd/systemd**
-    * Not NetworkManager
-    * Not `/etc/network/interfaces`
-        * Less Debian-centric in this sense
-* Or perhaps **Netplan**?
+* Persists network config with **Netplan** (backed by **networkd/systemd**)
 
