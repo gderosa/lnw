@@ -11,4 +11,5 @@ Plus UI based on [Web Components](https://developer.mozilla.org/en-US/docs/Web/A
     * Not NetworkManager
     * Not `/etc/network/interfaces`
         * Less Debian-centric in this sense
+* Or perhaps **Netplan**?
 
