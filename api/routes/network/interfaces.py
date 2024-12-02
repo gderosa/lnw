@@ -59,7 +59,7 @@ class NetworkInterface(BaseModel):
             return False
         if self.link_type == 'loopback':
             return False
-        if self.is_dhcp:
+        if self.is_dhcp4:
             return False
         return True
 
@@ -75,17 +75,23 @@ class NetworkInterface(BaseModel):
 
     @computed_field
     @cached_property
-    def is_dhcp(self) -> bool:
+    def is_dhcp4(self) -> bool:  # TODO: IPV6 whataboutism
         sp = subprocess.run(
-            f"ps aux | grep -v grep | grep dhc | grep {self.name}",
+            f"ps aux | grep -v grep | grep dhc | egrep -v '\-\w*6' | grep {self.name}",
             shell=True, check=False, capture_output=True
         )
         if sp.returncode == 0:
             return bool(sp.stdout.strip())
         if sp.returncode == 1:
-            return False
+            return self.is_dhcp4_networkd()
         # from grep man page, exit status = 2 for actual errors
         sp.check_returncode()
+
+    def is_dhcp4_networkd(self):
+        networkd_data = json.loads(
+            subprocess.check_output(['networkctl', '--json=short', 'status', self.name]))
+        return "DHCPv4Client" in networkd_data
+            
 
 
 
@@ -222,12 +228,12 @@ async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
         LOGGER
     )
 
-@router.post("/network/interfaces/persist")
+@router.post("/network/interfaces/persist")  # TODO: unfinished, remove if not finished eventually
 async def persist_netifs() -> List[NetworkInterface]:
     netifs = get_network_interfaces()
     persisted_netifs = []
     for netif in netifs:
-        if netif.is_dhcp:
+        if netif.is_dhcp4:
             persisted_netifs.append(netif)
         elif netif.statically_persistable():
             persisted_addresses = netif.statically_persistable_addresses()
