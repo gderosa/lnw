@@ -39,7 +39,10 @@ su $USERNAME -c "
     pip install -r requirements.txt
 "
 
-# systemctl enable systemd-networkd
-# systemctl start systemd-networkd
-# systemctl status systemd-networkd --no-pager
-
+# Netplan.io
+apt-get purge avahi*
+apt-get install systemd-resolved netplan.io
+systemctl enable systemd-networkd
+systemctl start systemd-networkd
+systemctl enable systemd-resolved
+systemctl start systemd-resolved
