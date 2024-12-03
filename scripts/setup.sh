@@ -40,9 +40,11 @@ su $USERNAME -c "
 "
 
 # Netplan.io
-apt-get purge avahi*
-apt-get install systemd-resolved netplan.io
+apt-get -y purge avahi*
+apt-get -y install systemd-resolved netplan.io
 systemctl enable systemd-networkd
 systemctl start systemd-networkd
 systemctl enable systemd-resolved
 systemctl start systemd-resolved
+
+# TODO: https://gist.github.com/mss/7a8e048dd51e5ef928039f1450ba8f31
