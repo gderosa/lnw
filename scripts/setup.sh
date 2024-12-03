@@ -48,3 +48,4 @@ systemctl enable systemd-resolved
 systemctl start systemd-resolved
 
 # TODO: https://gist.github.com/mss/7a8e048dd51e5ef928039f1450ba8f31
+# mv /etc/netplan/*ifupdown.yaml /etc/netplan/lnw.yaml  ?
