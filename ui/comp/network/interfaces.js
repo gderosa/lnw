@@ -125,7 +125,7 @@ class NetworkInterfaces extends HTMLElement {
         <table>
             <thead>
                 <tr>
-                    <th>Name</th> <th>Type</th> <th>DHCP?</th> <th>Addresses</th> <th>Up?</th>
+                    <th>Name</th> <th>Type</th> <th>DHCP (IPv4)</th> <th>Addresses</th> <th>Up?</th>
                 </tr>
             </thead>
             <tbody>
@@ -157,11 +157,11 @@ class NetworkInterfaces extends HTMLElement {
             linkType.textContent = netIf.link_type;
             tr.appendChild(linkType);
 
-            const isDhcp = $new('td');
-            isDhcp.setAttribute('col', 'is-dhcp');
-            isDhcp.innerHTML = netIf.is_dhcp ? '&check;' : '';
-            isDhcp.classList.add('symbol', 'truthy');
-            tr.appendChild(isDhcp);
+            const isDhcp4 = $new('td');
+            isDhcp4.setAttribute('col', 'is-dhcp4');
+            isDhcp4.innerHTML = netIf.is_dhcp4 ? '&check;' : '';
+            isDhcp4.classList.add('symbol', 'truthy');
+            tr.appendChild(isDhcp4);
 
             const addrs = $new('td');
             addrs.setAttribute('col', 'ip-addresses');

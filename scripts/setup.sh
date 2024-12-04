@@ -39,7 +39,14 @@ su $USERNAME -c "
     pip install -r requirements.txt
 "
 
-# systemctl enable systemd-networkd
-# systemctl start systemd-networkd
-# systemctl status systemd-networkd --no-pager
-
+# Netplan.io migration -- see also https://gist.github.com/mss/7a8e048dd51e5ef928039f1450ba8f31
+apt-get -y install systemd-resolved netplan.io
+systemctl unmask systemd-networkd
+systemctl start systemd-networkd
+systemctl unmask systemd-resolved
+systemctl start systemd-resolved
+ENABLE_TEST_COMMANDS=1 netplan migrate
+apt-get -y purge avahi-daemon ifupdown resolvconf
+chmod -v go-rwx /etc/netplan/*.yaml
+netplan apply
+# ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf  # done automatically
