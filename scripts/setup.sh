@@ -39,13 +39,13 @@ su $USERNAME -c "
     pip install -r requirements.txt
 "
 
-# Netplan.io
-apt-get -y purge avahi*
+# Netplan.io migration, see also https://gist.github.com/mss/7a8e048dd51e5ef928039f1450ba8f31
 apt-get -y install systemd-resolved netplan.io
-systemctl enable systemd-networkd
+systemctl unmask systemd-networkd
 systemctl start systemd-networkd
-systemctl enable systemd-resolved
+systemctl unmask systemd-resolved
 systemctl start systemd-resolved
-
-# TODO: https://gist.github.com/mss/7a8e048dd51e5ef928039f1450ba8f31
-# mv /etc/netplan/*ifupdown.yaml /etc/netplan/lnw.yaml  ?
+ENABLE_TEST_COMMANDS=1 netplan migrate
+apt-get -y purge avahi-daemon ifupdown resolvconf
+netplan apply
+# ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
