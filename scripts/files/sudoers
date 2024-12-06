@@ -9,5 +9,5 @@ lnw ALL = NOPASSWD: /usr/sbin/ip link set *
 lnw ALL = NOPASSWD: /usr/sbin/netplan *
 lnw ALL = NOPASSWD: /usr/bin/mkdir -p /run/lnw
 lnw ALL = NOPASSWD: /usr/bin/chown lnw\:lnw /run/lnw
-lnw ALL = NOPASSWD: /usr/sbin/ln -sf /run/lnw/*
+lnw ALL = NOPASSWD: /usr/bin/ln -sf /run/lnw/*
 

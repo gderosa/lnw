@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import yaml
 
 from .command import execute as execute_command
@@ -15,35 +17,46 @@ YAML_DATA_BLANK = {
     }
 }
 
-RUN_FILE = '/run/lnw/99-lnw-run.yaml'
+RUNTIME_BASENAME = '99-lnw-run.yaml'
+RUNTIME_DIR = '/run/lnw/netplan'
+RUNTIME_PATH = f"{RUNTIME_DIR}/{RUNTIME_BASENAME}"
+RUNTIME_SYMLINK = f"/etc/netplan/{RUNTIME_BASENAME}"
 
 
-class NetplanInterface:
-    def __init__(self, ifname: str, logger=None):
-        self.ifname = ifname
-        self.logger = logger
-        self.yaml_data = YAML_DATA_BLANK
-        self.yaml_data['network']['ethernets'][ifname] = {}
-
-    def set_dhcp4(self, is_on: bool):
-        self.yaml_data['network']['ethernets'][self.ifname]['dhcp4'] = is_on
-
-    def write(self, persist: bool):
-        if persist:
-            raise NotImplementedError
+def _init_files():
+    Path(RUNTIME_DIR).mkdir(parents=True, exist_ok=True)
+    if not Path(RUNTIME_PATH).is_file():
+        with open(RUNTIME_PATH, 'w') as f:
+            yaml.dump(YAML_DATA_BLANK, f)
+    symlink = Path(RUNTIME_SYMLINK)
+    if symlink.is_symlink():
+        if symlink.resolve() == RUNTIME_PATH:
+            pass
         else:
-            with open(RUNTIME_FILE, 'w') as f:
-                yaml.dump(self.yaml_data, f)
+            execute_command(['sudo', 'ln', '-sf', RUNTIME_PATH, RUNTIME_SYMLINK])
+    else:
+        execute_command(['sudo', 'ln', '-sf', RUNTIME_PATH, RUNTIME_SYMLINK])
 
-    def apply(self, persist: bool):
-        if persist:
-            raise NotImplementedError
-        # Do not persist!
-        self.write(persist=False)
-        execute_command([
-            'sudo', 'netplan', 'apply'
-        ], self.logger)
+def _load() -> dict:
+    with open(RUNTIME_PATH) as f:
+        return yaml.safe_load(f)
+
+def _write(data):
+    with open(RUNTIME_PATH, 'w') as f:
+            yaml.dump(data, f)
+
+def _set_dhcp4(ifname, is_on: bool):
+    data = _load()
+    if not ifname in data['network']['ethernets']:
+        data['network']['ethernets'][ifname] = {}
+    data['network']['ethernets'][ifname]['dhcp4'] = is_on
+    _write(data)
+
+def _apply():
+    execute_command(['sudo', 'netplan', 'apply'])
 
 
-
-
+def set_dhcp4(ifname, is_on: bool):
+    _init_files()
+    _set_dhcp4(ifname, is_on)
+    _apply()

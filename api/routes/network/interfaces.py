@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
 
 from ...lib.command import execute as execute_command, LOGGER
-from ...lib.netplan import NetplanInterface
+from ...lib.netplan import set_dhcp4
 
 
 class AddressFamily (str, Enum):
@@ -199,10 +199,9 @@ async def netif_ip_link_set_updown(name: str, updown: UpDown) -> None:
     )
 
 @router.post("/network/interfaces/{name}/dhcp/set/{onoff}")
-async def netif_ip_link_set_updown(name: str, onoff: OnOff) -> None:
-    npi = NetplanInterface(name, LOGGER)
-    npi.set_dhcp4(onoff == 'on')
-    npi.apply(persist=False)
+async def netif_dhcp_set(name: str, onoff: OnOff) -> None:
+    ifname = name
+    set_dhcp4(ifname, onoff == 'on')
 
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
