@@ -1,22 +1,14 @@
-import sys
 from typing import List, Optional
 from enum import Enum
 import json
-import logging
 import subprocess
 from functools import cached_property
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
 
-from ...lib.command import execute as execute_command
+from ...lib.command import execute as execute_command, LOGGER
 from ...lib.netplan import NetplanInterface
-
-
-
-# TODO: this breaks if a different server is used!
-LOGGER = logging.getLogger('uvicorn')
-
 
 
 class AddressFamily (str, Enum):

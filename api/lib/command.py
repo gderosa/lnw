@@ -1,10 +1,14 @@
 from typing import List
 import subprocess
+import logging
 
 from fastapi import HTTPException
 
 
-def execute(cmdline: List[str], logger=None):
+LOGGER = logging.getLogger('uvicorn')
+
+
+def execute(cmdline: List[str], logger=LOGGER):
     SUBPROCESS_RUN_OPTS = dict(check=True, text=True, capture_output=True)
 
     if logger:
