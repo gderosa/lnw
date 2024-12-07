@@ -1,5 +1,63 @@
 import { $new, $node, $byId } from "../../lib/dom.js"
 
+class NetIfCheckbox extends HTMLElement {
+    constructor() {
+        super();
+        this.ifName = this.getAttribute('ifname');
+    }
+    async connectedCallback() {
+        this.networkInterfaces = this.closest('network-interfaces');
+        this.checkbox = $new('input');
+        this.checkbox.setAttribute('type', 'checkbox');
+        this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
+        this.appendChild(this.checkbox);
+        await this.refresh();
+    }
+    refreshFromNetIfData(netIfData) {
+        // NotImplemented
+    }
+    async refresh() {
+        const response = await fetch('/api/v1/network/interfaces/' + this.ifName);
+        const netIfData = await response.json();
+        this.refreshFromNetIfData(netIfData);
+    }
+    async refreshInterface() {
+        return await this.networkInterfaces.refreshInterface(this.ifName);
+    }
+    async update(event) {
+        // NotImplemented
+    }
+}
+
+class IfUpDownControl extends NetIfCheckbox {
+    refreshFromNetIfData(netIfData) {
+        if (netIfData.flags.includes('UP')) {
+            this.checkbox.checked = true;
+            this.checkbox.setAttribute('checked', '');
+        } else {
+            this.checkbox.checked = false;
+            this.checkbox.removeAttribute('checked');
+        }
+    }
+    async update(event) {
+        const upDown = this.checkbox.checked ? 'up' : 'down';
+        if (upDown === 'up' || confirm(`Are you sure you want to bring ${this.ifName} ${upDown}?`)) {
+            const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
+                method: 'POST'
+            });
+            const responseData = await response.json();
+            if (!response.ok) {
+                alert(responseData.detail);
+            }
+        } else if (upDown === 'down') {
+            // not confirmed, bring back
+            this.checkbox.checked = true;
+        }
+        // in any case verify net iface facts
+        await this.refreshInterface();
+    }
+}
+customElements.define('ifupdown-control', IfUpDownControl);
 
 class IPAddrControl extends HTMLElement {
     constructor() {
@@ -73,52 +131,6 @@ class IPAddrControl extends HTMLElement {
 }
 customElements.define('ipaddr-control', IPAddrControl);
 
-class IfUpDownControl extends HTMLElement {
-    constructor() {
-        super();
-        this.ifName = this.getAttribute('ifname');
-    }
-    async connectedCallback() {
-        this.networkInterfaces = this.closest('network-interfaces');
-        this.checkbox = $new('input');
-        this.checkbox.setAttribute('type', 'checkbox');
-        this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
-        this.appendChild(this.checkbox);
-        await this.refresh();
-    }
-    async refresh() {
-        const response = await fetch('/api/v1/network/interfaces/' + this.ifName);
-        const netIfData = await response.json();
-        if (netIfData.flags.includes('UP')) {
-            this.checkbox.checked = true;
-            this.checkbox.setAttribute('checked', '');
-        } else {
-            this.checkbox.checked = false;
-            this.checkbox.removeAttribute('checked');
-        }
-    }
-    async refreshInterface() {
-        return await this.networkInterfaces.refreshInterface(this.ifName);
-    }
-    async update(event) {
-        const upDown = this.checkbox.checked ? 'up' : 'down';
-        if (upDown === 'up' || confirm(`Are you sure you want to bring ${this.ifName} ${upDown}?`)) {
-            const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/ip/link/set/${upDown}`, {
-                method: 'POST'
-            });
-            const responseData = await response.json();
-            if (!response.ok) {
-                alert(responseData.detail);
-            }
-        } else if (upDown === 'down') {
-            // not confirmed, bring back
-            this.checkbox.checked = true;
-        }
-        // in any case verify net iface facts
-        await this.refreshInterface();
-    }
-}
-customElements.define('ifupdown-control', IfUpDownControl);
 
 class NetworkInterfaces extends HTMLElement {
     static INIT_HTML = `
