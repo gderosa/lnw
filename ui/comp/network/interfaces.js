@@ -59,6 +59,35 @@ class IfUpDownControl extends NetIfCheckbox {
 }
 customElements.define('ifupdown-control', IfUpDownControl);
 
+class IfDhcpCheckbox extends NetIfCheckbox {
+    refreshFromNetIfData(netIfData) {
+        this.checkbox.checked = netIfData.is_dhcp4;
+        if (netIfData.is_dhcp4) {
+            this.checkbox.setAttribute('checked', '');
+        } else {
+            this.checkbox.removeAttribute('checked');
+        }
+    }
+    async update(event) {
+        const onOff = this.checkbox.checked ? 'on' : 'off';
+        if (onOff === 'on' || confirm(`Are you sure you want to disable DHCP on ${this.ifName}?`)) {
+            const response = await fetch(`/api/v1/network/interfaces/${this.ifName}/dhcp/set/${onOff}`, {
+                method: 'POST'
+            });
+            const responseData = await response.json();
+            if (!response.ok) {
+                alert(responseData.detail);
+            }
+        } else if (onOff === 'off') {
+            // not confirmed, bring back
+            this.checkbox.checked = true;
+        }
+        // in any case verify net iface facts
+        await this.refreshInterface();
+    }
+}
+customElements.define('ifdhcp-checkbox', IfDhcpCheckbox);
+
 class IPAddrControl extends HTMLElement {
     constructor() {
         super();
@@ -170,9 +199,9 @@ class NetworkInterfaces extends HTMLElement {
             tr.appendChild(linkType);
 
             const isDhcp4 = $new('td');
-            isDhcp4.setAttribute('col', 'is-dhcp4');
-            isDhcp4.innerHTML = netIf.is_dhcp4 ? '&check;' : '';
-            isDhcp4.classList.add('symbol', 'truthy');
+            isDhcp4.setAttribute('col', 'is-dhcp');
+            isDhcp4.classList.add('singlecheck');
+            isDhcp4.innerHTML = `<ifdhcp-checkbox ifname="${netIf.name}"></ifdhcp-checkbox>`;
             tr.appendChild(isDhcp4);
 
             const addrs = $new('td');
@@ -220,6 +249,10 @@ class NetworkInterfaces extends HTMLElement {
         // Refresh status up/down checkbox
         const upDown = $node(`table tr[ifname='${ifName}'] td[col='is-up'] ifupdown-control`, this);
         await upDown.refresh();
+
+        // Refresh DHCPv4 checkbox
+        const isDhcp4 = $node(`table tr[ifname='${ifName}'] td[col='is-dhcp'] ifdhcp-checkbox`, this);
+        await isDhcp4.refresh();
     }
 }
 customElements.define('network-interfaces', NetworkInterfaces);

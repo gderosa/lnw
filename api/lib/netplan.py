@@ -30,7 +30,7 @@ def _init_files():
             yaml.dump(YAML_DATA_BLANK, f)
     symlink = Path(RUNTIME_SYMLINK)
     if symlink.is_symlink():
-        if symlink.resolve() == RUNTIME_PATH:
+        if str(symlink.resolve()) == RUNTIME_PATH:
             pass
         else:
             execute_command(['sudo', 'ln', '-sf', RUNTIME_PATH, RUNTIME_SYMLINK])
