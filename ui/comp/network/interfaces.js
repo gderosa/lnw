@@ -10,6 +10,7 @@ class NetIfCheckbox extends HTMLElement {
         this.checkbox = $new('input');
         this.checkbox.setAttribute('type', 'checkbox');
         this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
+        this.checkbox.addEventListener('change', this.schedule.bind(this));
         this.appendChild(this.checkbox);
         await this.refresh();
     }
@@ -23,6 +24,10 @@ class NetIfCheckbox extends HTMLElement {
     }
     async refreshInterface() {
         return await this.networkInterfaces.refreshInterface(this.ifName);
+    }
+    schedule() {
+        // Some network changes happen after some time, schedule a refresh
+        setTimeout(this.refreshInterface.bind(this), 3000);
     }
     async update(event) {
         // NotImplemented
