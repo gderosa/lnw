@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from .command import execute as execute_command
+from ..command import execute as execute_command
 
 
 # TODO: non ethernets? persistence?

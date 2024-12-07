@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
 
 from ...lib.command import execute as execute_command, LOGGER
-from ...lib.netplan import set_dhcp4
+from ...lib.netplan.runtime import set_dhcp4
 
 
 class AddressFamily (str, Enum):
