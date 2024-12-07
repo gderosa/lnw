@@ -66,8 +66,9 @@ table th {
 table td {
     font-family: monospace;
     text-align: right;
-    background-color: #d4e2ee;
+    background-color: #e6effb;
     padding: 4px;
+    border-radius: 4px;
 }
 
 table td.symbol, table td.singlecheck {
