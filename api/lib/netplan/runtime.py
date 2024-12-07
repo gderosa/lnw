@@ -5,9 +5,6 @@ import yaml
 from ..command import execute as execute_command
 
 
-# TODO: non ethernets? persistence?
-
-
 YAML_DATA_BLANK = {
     'network': {
         'version': 2,
@@ -16,7 +13,6 @@ YAML_DATA_BLANK = {
         }
     }
 }
-
 RUNTIME_BASENAME = '99-lnw-run.yaml'
 RUNTIME_DIR = '/run/lnw/netplan'
 RUNTIME_PATH = f"{RUNTIME_DIR}/{RUNTIME_BASENAME}"
