@@ -1,18 +1,14 @@
 from typing import List, Optional
 from enum import Enum
 import json
-import logging
 import subprocess
 from functools import cached_property
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
 
-
-
-# TODO: this breaks if a different server is used!
-LOGGER = logging.getLogger('uvicorn')
-
+from ...lib.command import execute as execute_command, LOGGER
+from ...lib.netplan.runtime import set_dhcp4
 
 
 class AddressFamily (str, Enum):
@@ -23,6 +19,9 @@ class UpDown (str, Enum):
     up = 'up'
     down = 'down'
 
+class OnOff (str, Enum):  # TODO: this looks like general purpose; move elsewhere?
+    on = 'on'
+    off = 'off'
 
 class IPAddress(BaseModel):
     family:     AddressFamily   | None      = None
@@ -77,7 +76,7 @@ class NetworkInterface(BaseModel):
     @cached_property
     def is_dhcp4(self) -> bool:  # TODO: IPV6 whataboutism
         sp = subprocess.run(
-            f"ps aux | grep -v grep | grep dhc | egrep -v '\-\w*6' | grep {self.name}",
+            R"ps aux | grep -v grep | grep dhc | egrep -v '\-\w*6' | grep {self.name}",
             shell=True, check=False, capture_output=True
         )
         if sp.returncode == 0:
@@ -91,22 +90,7 @@ class NetworkInterface(BaseModel):
         networkd_data = json.loads(
             subprocess.check_output(['networkctl', '--json=short', 'status', self.name]))
         return "DHCPv4Client" in networkd_data
-            
 
-
-
-
-def execute_command(cmdline: List[str], logger=None):
-    SUBPROCESS_RUN_OPTS = dict(check=True, text=True, capture_output=True)
-
-    if logger:
-        logger.info('Executing command: ' + repr(cmdline))
-    try:
-        subprocess.run(cmdline, **SUBPROCESS_RUN_OPTS)
-    except subprocess.CalledProcessError as e:
-        logger.error(str(e).strip())
-        logger.error(e.stderr.strip())
-        raise HTTPException(status_code=500, detail=(str(e) + '\n' + e.stderr))
 
 
 def get_network_interfaces() -> List[NetworkInterface]:
@@ -213,6 +197,11 @@ async def netif_ip_link_set_updown(name: str, updown: UpDown) -> None:
         ['sudo', 'ip', 'link', 'set', updown, 'dev', name],
         LOGGER
     )
+
+@router.post("/network/interfaces/{name}/dhcp/set/{onoff}")
+async def netif_dhcp_set(name: str, onoff: OnOff) -> None:
+    ifname = name
+    set_dhcp4(ifname, onoff == 'on')
 
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
