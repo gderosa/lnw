@@ -16,8 +16,8 @@ def execute(cmdline: List[str], logger=LOGGER):
     try:
         cp = subprocess.run(cmdline, **SUBPROCESS_RUN_OPTS)
         if logger:
-            logger.info(cp.stdout)
-            logger.warning(cp.stderr)
+            if cp.stdout.strip(): logger.info(cp.stdout)
+            if cp.stderr.strip(): logger.warning(cp.stderr)
     except subprocess.CalledProcessError as e:
         logger.error(str(e).strip())
         logger.error(e.stderr.strip())
