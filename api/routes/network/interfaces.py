@@ -91,6 +91,16 @@ class NetworkInterface(BaseModel):
             subprocess.check_output(['networkctl', '--json=short', 'status', self.name]))
         return "DHCPv4Client" in networkd_data
 
+    def is_up(self):
+        return 'UP' in self.flags
+    def is_down(self):
+        return not self.is_up()
+
+    def bring(self, updown: UpDown):
+        execute_command(
+            ['sudo', 'ip', 'link', 'set', updown, 'dev', self.name],
+            LOGGER
+        )
 
 
 def get_network_interfaces() -> List[NetworkInterface]:
@@ -161,7 +171,6 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                 )
 
 
-
 router = APIRouter(
     tags=["network/interfaces"],
     prefix="/api/v1"
@@ -193,25 +202,19 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
 
 @router.post("/network/interfaces/{name}/ip/link/set/{updown}")
 async def netif_ip_link_set_updown(name: str, updown: UpDown) -> None:
-    execute_command(
-        ['sudo', 'ip', 'link', 'set', updown, 'dev', name],
-        LOGGER
-    )
+    netif = get_network_interface(name)
+    netif.bring(updown)
 
-@router.post("/network/interfaces/{name}/dhcp/set/{onoff}")
-async def netif_dhcp_set(name: str, onoff: OnOff) -> None:
-    ifname = name
+@router.post("/network/interfaces/{ifname}/dhcp/set/{onoff}")
+async def netif_dhcp_set(ifname: str, onoff: OnOff) -> None:
+    iface = get_network_interface(ifname)
+    was_down = iface.is_down()
     set_dhcp4(ifname, onoff == 'on')
+    if was_down and onoff == 'off':  # preven Netplan side effect
+        iface.bring('down')
 
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
-    # https://serverfault.com/questions/486872/remove-ip-with-ip-command-in-linux
-    # DONE: /etc/sysctl.d/lnw.conf installed via setup.sh
-    # DONE: text content: net.ipv4.conf.all.promote_secondaries=1
-    # execute_command(
-    #     ['sudo', 'sysctl', '-w', f'net.ipv4.conf.{name}.promote_secondaries=1'],
-    #     LOGGER
-    # )
     execute_command(
         ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
         LOGGER
@@ -229,5 +232,3 @@ async def persist_netifs() -> List[NetworkInterface]:
             netif.ip.addresses = persisted_addresses
             persisted_netifs.append(netif)
     return persisted_netifs
-
-
