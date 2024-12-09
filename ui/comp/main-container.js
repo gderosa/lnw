@@ -3,7 +3,7 @@ class MainContainer extends HTMLElement {
         super();       
     }
     async connectedCallback() {
-        const opacityHex = '10';
+        const opacityHex = '12';
         const response = await fetch('/api/v1/system/info');
         const systemInfo = await response.json();
         const machineId = systemInfo.machine_id;
