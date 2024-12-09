@@ -49,6 +49,13 @@ side-menu a:hover {
     text-decoration: underline;
 }
 
+.system-info-badge {
+    font-weight: bold;
+    color: grey;
+    padding: 1em;
+    margin: 1em;
+}
+
 main-content {
     display: flex;
     flex-direction: column;
@@ -69,7 +76,7 @@ table td {
     background-color: #e6effbff;
     padding: 4px;
     border-radius: 4px;
-    border: 1px #eeeeee solid;
+    border: 1px #e8e8e8 solid;
 }
 
 table td.symbol, table td.singlecheck {

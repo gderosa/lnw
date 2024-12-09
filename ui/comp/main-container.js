@@ -11,12 +11,13 @@ class MainContainer extends HTMLElement {
         const machineHash = systemInfo.machine_hash;
         const cssFgColor = '#' + machineHash.slice(-6);
         const cssBgColor = cssFgColor + opacityHex;
-        console.log(cssBgColor);
         document.styleSheets[0].insertRule(`table tr td { background: ${cssBgColor} }`, 0);
         // window.dispatchEvent(new CustomEvent('system-info', systemInfo));
-        $node('.system-info-badge').textContent = systemInfo.hostname;
-        $node('.system-info-badge').style.borderTop = `1px ${cssFgColor} solid`;
-
+        setTimeout(() => {
+            $node('.system-info-badge').textContent = systemInfo.hostname;
+            $node('.system-info-badge').style.borderTop = `2px ${cssFgColor} dotted`;
+            // $node('side-menu').style.borderRight = `1px ${cssFgColor} dotted`;
+        }, 150);
     }
 }
 customElements.define('main-container', MainContainer)
