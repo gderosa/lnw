@@ -15,7 +15,7 @@ class MainContainer extends HTMLElement {
         // window.dispatchEvent(new CustomEvent('system-info', systemInfo));
         setTimeout(() => {
             $node('.system-info-badge').textContent = systemInfo.hostname;
-            $node('.system-info-badge').style.borderTop = `2px ${cssFgColor} dotted`;
+            $node('.system-info-badge').style.borderTop = `1px ${cssFgColor} solid`;
             // $node('side-menu').style.borderRight = `1px ${cssFgColor} dotted`;
         }, 150);
     }
