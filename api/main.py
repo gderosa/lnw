@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse, FileResponse
 
 from .routes import easyrsa
 from .routes.network import interfaces as network_interfaces
+from .routes.system import info as system_info
 
 from .lib.command import execute as execute_command
 
@@ -22,6 +23,7 @@ app.mount("/ui", StaticFiles(directory="ui"), name="ui")
 
 app.include_router(easyrsa.router)
 app.include_router(network_interfaces.router)
+app.include_router(system_info.router)
 
 @app.get("/")
 async def ui_home():

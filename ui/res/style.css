@@ -66,7 +66,7 @@ table th {
 table td {
     font-family: monospace;
     text-align: right;
-    background-color: #e6effb;
+    background-color: #e6effbff;
     padding: 4px;
     border-radius: 4px;
 }
