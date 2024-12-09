@@ -68,8 +68,8 @@ table td {
     text-align: right;
     background-color: #e6effbff;
     padding: 4px;
-    border-radius: 2px;
-    border: 1px #ddd solid;
+    border-radius: 4px;
+    border: 1px #eeeeee solid;
 }
 
 table td.symbol, table td.singlecheck {

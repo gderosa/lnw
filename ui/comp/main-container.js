@@ -6,8 +6,8 @@ class MainContainer extends HTMLElement {
         const opacityHex = '12';
         const response = await fetch('/api/v1/system/info');
         const systemInfo = await response.json();
-        const machineId = systemInfo.machine_id;
-        const cssBgColor = '#' + machineId.slice(-6) + opacityHex;
+        const machineHash = systemInfo.machine_hash;
+        const cssBgColor = '#' + machineHash.slice(-6) + opacityHex;
         console.log(cssBgColor);
         document.styleSheets[0].insertRule(`table tr td { background: ${cssBgColor} }`, 0);
     }
