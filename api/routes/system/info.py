@@ -21,9 +21,9 @@ router = APIRouter(
 
 @router.get("/system/info")
 async def read_sysinfo() -> SystemInfo:
-    hostname = str(subprocess.check_output(['hostname']).strip())
+    hostname = str(subprocess.check_output(['hostname']).strip(), 'utf-8')
     machine_id = ''
-    with open('/etc/machine-id') as f:
+    with open('/etc/machine-id', 'r') as f:
         machine_id = str(f.read().strip())
     # https://www.devdoc.net/linux/man7.org-20170728/man5/machine-id.5.html#:~:text=This%20ID%20uniquely%20identifies%20the,must%20not%20be%20used%20directly.
     hash_me = hostname + machine_id
