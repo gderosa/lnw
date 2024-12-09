@@ -12,11 +12,11 @@ class MainContainer extends HTMLElement {
         const cssFgColor = '#' + machineHash.slice(-6);
         const cssBgColor = cssFgColor + opacityHex;
         document.styleSheets[0].insertRule(`table tr td { background: ${cssBgColor} }`, 0);
+        document.styleSheets[0].insertRule(`side-menu a { color: ${cssFgColor} }`, document.styleSheets[0].cssRules.length);
         // window.dispatchEvent(new CustomEvent('system-info', systemInfo));
-        setTimeout(() => {
+        setTimeout(() => {  // TODO: better orchestration than just a hardcoded delay?
             $node('.system-info-badge').textContent = systemInfo.hostname;
             $node('.system-info-badge').style.borderTop = `1px ${cssFgColor} solid`;
-            // $node('side-menu').style.borderRight = `1px ${cssFgColor} dotted`;
         }, 150);
     }
 }
