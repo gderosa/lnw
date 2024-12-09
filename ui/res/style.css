@@ -51,7 +51,7 @@ side-menu a:hover {
 
 .system-info-badge {
     font-weight: bold;
-    color: grey;
+    color: #666;
     padding: 1em;
     margin: 1em;
 }
@@ -75,8 +75,8 @@ table td {
     text-align: right;
     background-color: #e6effbff;
     padding: 4px;
-    border-radius: 4px;
-    border: 1px #e8e8e8 solid;
+    border-radius: 2px;
+    border: 1px #eee solid;
 }
 
 table td.symbol, table td.singlecheck {
