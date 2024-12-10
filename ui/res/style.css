@@ -151,8 +151,15 @@ div.persist {
 button.persist {
     margin: 1em 1em 1em 0;
     width: 12em;
-    font-size: 10.4pt;
+    font-size: 10pt;
 }
+/* button.dramatic {
+    color: #d00;
+    font-weight: bold;
+}
+button.significant {
+    color: #440;
+} */
 
 /* Misc */
 pre.file-name {
