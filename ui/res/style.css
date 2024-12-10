@@ -1,6 +1,7 @@
 :root {
     --host-hue: 180;
     --host-fg: hwb(var(--host-hue) 30% 35%);
+    --host-mg: hwb(var(--host-hue) 45% 50%);
     --host-bg: hwb(var(--host-hue) 90% 5%);
   }
 
@@ -58,7 +59,7 @@ side-menu a:hover {
 .system-info-badge {
     font-weight: bold;
     color: #444;
-    border-top: 1.5px var(--host-fg) solid;
+    border-top: 1.8px var(--host-fg) solid;
     padding: 1em;
     margin: 1em;
 }
@@ -120,7 +121,7 @@ table td ul li {
 
 input[type="checkbox"] {
     margin: 3px;
-    accent-color: white;
+    accent-color: var(--host-mg);
 }
 
 /* Outputs */
