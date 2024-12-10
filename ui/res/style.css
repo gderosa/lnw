@@ -1,3 +1,9 @@
+:root {
+    --host-hue: 180;
+    --host-fg: hwb(var(--host-hue) 33% 33%);
+    --host-bg: hwb(var(--host-hue) 88% 8%);
+  }
+
 /* Layout */
 
 body {
@@ -40,7 +46,7 @@ side-menu li.no-menu-children {
 }
 
 side-menu a {
-    color: #68a;
+    color: var(--host-fg);
     text-decoration: none;
     font-weight: bold;
 }
@@ -52,6 +58,7 @@ side-menu a:hover {
 .system-info-badge {
     font-weight: bold;
     color: #444;
+    border-top: 1px var(--host-fg) solid;
     padding: 1em;
     margin: 1em;
 }
@@ -73,10 +80,9 @@ table th {
 table td {
     font-family: monospace;
     text-align: right;
-    background-color: #e6effbff;
+    background-color: var(--host-bg);
     padding: 4px;
-    border-radius: 2px;
-    border: 1px #eee solid;
+    border-radius: 4px;
 }
 
 table td.symbol, table td.singlecheck {
@@ -114,6 +120,7 @@ table td ul li {
 
 input[type="checkbox"] {
     margin: 3px;
+    accent-color: white;
 }
 
 /* Outputs */

@@ -11,7 +11,7 @@ from ...lib.command import execute as execute_command
 
 class SystemInfo(BaseModel):
     hostname:       str
-    machine_hash:   str
+    machine_hash:   int
 
 
 router = APIRouter(
@@ -27,9 +27,9 @@ async def read_sysinfo() -> SystemInfo:
         machine_id = str(f.read().strip())
     # https://www.devdoc.net/linux/man7.org-20170728/man5/machine-id.5.html#:~:text=This%20ID%20uniquely%20identifies%20the,must%20not%20be%20used%20directly.
     hash_me = hostname + machine_id
-    h = hashlib.new('sha256')
+    h = hashlib.new('md5')
     h.update(bytes(hash_me, 'utf-8'))
-    machine_hash = h.hexdigest()
+    machine_hash = int.from_bytes(h.digest(), 'little')
     return SystemInfo(
         hostname=hostname,
         machine_hash=machine_hash
