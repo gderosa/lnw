@@ -10,7 +10,7 @@ class MainContainer extends HTMLElement {
         const machineHash = systemInfo.machine_hash;
         const hostname = systemInfo.hostname;
         document.documentElement.style.setProperty('--host-hue', machineHash % 360);
-        // document.documentElement.style.setProperty('--host-hue', Math.random() * 360);  // debug
+        document.documentElement.style.setProperty('--host-hue', Math.random() * 360);  // debug
         setTimeout(() => {  // TODO: better orchestration than just a hardcoded delay?
             $node('.system-info-badge').textContent = hostname;
         }, 150);
