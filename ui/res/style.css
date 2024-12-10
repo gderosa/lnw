@@ -1,7 +1,7 @@
 :root {
     --host-hue: 180;
-    --host-fg: hwb(var(--host-hue) 33% 30%);
-    --host-bg: hwb(var(--host-hue) 91% 3%);
+    --host-fg: hwb(var(--host-hue) 30% 35%);
+    --host-bg: hwb(var(--host-hue) 90% 5%);
   }
 
 /* Layout */
