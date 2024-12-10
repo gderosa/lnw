@@ -156,8 +156,8 @@ button.persist {
 
 /* Misc */
 pre {
-    border: 1px var(--host-tb) solid;
-    border-radius: 2px;
+    border: 2px var(--host-tb) solid;
+    border-radius: 6px;
     display: inline-block;
     padding: 1.5ex 3ex 0 2ex;
 }
