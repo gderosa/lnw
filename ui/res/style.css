@@ -1,8 +1,9 @@
 :root {
-    --host-hue: 180;
+    --host-hue: 180deg;
     --host-fg: hwb(var(--host-hue) 30% 35%);
     --host-mg: hwb(var(--host-hue) 45% 50%);
-    --host-bg: hwb(var(--host-hue) 90% 5%);
+    --host-tb: hwb(var(--host-hue) 86% 6%);
+    --host-bg: hwb(var(--host-hue) 94% 2%);
   }
 
 /* Layout */
@@ -83,7 +84,8 @@ table td {
     text-align: right;
     background-color: var(--host-bg);
     padding: 4px;
-    border-radius: 5px;
+    border-radius: 2px;
+    border: 1px var(--host-tb) solid;
 }
 
 table td.symbol, table td.singlecheck {
@@ -138,4 +140,20 @@ ipaddr-control[scope="link"], ipaddr-control[scope="host"] {
 
 table tr td ul ipaddr-control input {
     width: calc(100% - 4em);
+}
+
+/* Buttons / Persist */
+
+button.persist {
+    margin: 1.66em 1.25em 1.66em 0;
+    width: 12em;
+    font-size: 10.4pt;
+}
+
+/* Misc */
+pre {
+    border: 1px var(--host-fg) solid;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 1ex 3ex 0 2ex;
 }

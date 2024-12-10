@@ -2,3 +2,27 @@
 
 <h2>Network Interfaces</h2>
 <network-interfaces id="network-interfaces-0"></network-interfaces>
+
+<div class="persist">
+    <button class="persist">Persist!</button>
+    <button class="persist">Restore Saved Config!</button>
+</div>
+<div class="persist">
+    <details>
+        <summary>Show saved config:</summary>
+        <pre>
+network:
+    ethernets:
+        eth0:
+            dhcp4: true
+        eth1:
+            addresses:
+                - 1.2.3.6/24
+                - 2.2.3.5/24
+            optional: true
+        eth2:
+            dhcp4: true
+    version: 2          
+        </pre>
+    </details>
+</div>
