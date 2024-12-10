@@ -6,19 +6,36 @@ class MainContainer extends HTMLElement {
     }
     async connectedCallback() {
         const opacityHexBg = '08';
-        const opacityHexFg = 'bb';
+        const opacityCssFg = 'filter: opacity(72%);';
         const response = await fetch('/api/v1/system/info');
         const systemInfo = await response.json();
         const machineHash = systemInfo.machine_hash;
         const cssColor = '#' + machineHash.slice(-6);
         const cssBgColor = cssColor + opacityHexBg;
-        const cssFgColor = cssColor + opacityHexFg;
-        document.styleSheets[0].insertRule(`table tr td { background: ${cssBgColor} }`, 0);
-        document.styleSheets[0].insertRule(`side-menu a { color: ${cssFgColor} }`, document.styleSheets[0].cssRules.length);
-        // window.dispatchEvent(new CustomEvent('system-info', systemInfo));
+        document.styleSheets[0].insertRule(`table tr td { background: ${cssBgColor} }`);
+        document.styleSheets[0].insertRule(`
+            side-menu a {
+                color: ${cssColor};
+                ${opacityCssFg}
+            }`,
+            document.styleSheets[0].cssRules.length
+        );
+        document.styleSheets[0].insertRule(`
+            input[type="checkbox"] {
+                accent-color: ${cssColor};
+                ${opacityCssFg}
+            }`,
+            document.styleSheets[0].cssRules.length
+        );
+        document.styleSheets[0].insertRule(`
+            .system-info-badge {
+                border-top: 1px ${cssColor} solid;
+                ${opacityCssFg}
+            }`,
+            document.styleSheets[0].cssRules.length
+        );
         setTimeout(() => {  // TODO: better orchestration than just a hardcoded delay?
             $node('.system-info-badge').textContent = systemInfo.hostname;
-            $node('.system-info-badge').style.borderTop = `1px ${cssFgColor} solid`;
         }, 150);
     }
 }
