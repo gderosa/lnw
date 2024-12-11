@@ -151,23 +151,16 @@ div.persist {
 button.persist {
     margin: 1em 1em 1em 0;
     width: 12em;
-    font-size: 10pt;
+    font-size: 10.3pt;
 }
-/* button.dramatic {
-    color: #d00;
-    font-weight: bold;
-}
-button.significant {
-    color: #440;
-} */
 
 /* Misc */
-pre.file-name {
+.persist .file-name {
     margin-bottom: 0.6em;
     margin-top: 0.8em;
-    font-size:110%;
+    font-size: 10pt;
 }
-pre.file-content {
+.persist pre.file-content {
     margin-top: 0;
     border: 2px var(--host-tb) solid;
     border-radius: 6px;
