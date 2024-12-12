@@ -22,7 +22,6 @@ RUNTIME_SYMLINK = f"/etc/netplan/{RUNTIME_BASENAME}"
 PERSIST_BASENAME = '90-lnw.yaml'
 PERSIST_PATH = f"/etc/netplan/{PERSIST_BASENAME}"
 
-
 def _init_files():
 
     # Non-persistent (via /run fs)
