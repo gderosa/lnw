@@ -223,6 +223,23 @@ async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
 
 @router.get("/network/interfaces/persist/file")
 async def get_persisted_netifs_raw():
+    """
+    Show the managed Netplan config file, which will look like
+    ```
+        network:
+            ethernets:
+                eth0:
+                    dhcp4: true
+                eth1:
+                    addresses:
+                        - 1.2.3.6/24
+                        - 2.2.3.5/24
+                    optional: true
+                eth2:
+                    dhcp4: true
+            version: 2
+    ```
+    """
     return FileResponse(PERSIST_PATH)
 
 @router.post("/network/interfaces/persist")
