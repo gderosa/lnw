@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
 
 from ...lib.command import execute as execute_command, LOGGER
-from ...lib.netplan import set_dhcp4, persist_interfaces
+from ...lib.netplan import set_dhcp4, persist_interfaces, restore_interfaces
 
 
 class AddressFamily (str, Enum):
@@ -220,7 +220,7 @@ async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
         LOGGER
     )
 
-@router.post("/network/interfaces/persist")  # TODO: unfinished, remove if not finished eventually
+@router.post("/network/interfaces/persist")
 async def persist_netifs() -> None:
     netifs = get_network_interfaces()
     persisted_netifs = []
@@ -232,3 +232,7 @@ async def persist_netifs() -> None:
             netif.ip.addresses = persisted_addresses
             persisted_netifs.append(netif)
     persist_interfaces(persisted_netifs)
+
+@router.post("/network/interfaces/restore")
+async def restore_netifs() -> None:
+    restore_interfaces()

@@ -88,3 +88,8 @@ def persist_interfaces(interfaces):
     _init_files()
     _write(data,            PERSIST_PATH)
     _write(YAML_DATA_BLANK, RUNTIME_PATH)
+
+def restore_interfaces():
+    _init_files()
+    _write(YAML_DATA_BLANK, RUNTIME_PATH)
+    _apply()
