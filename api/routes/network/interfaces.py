@@ -4,11 +4,12 @@ import json
 import subprocess
 from functools import cached_property
 
-from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
+from fastapi import APIRouter
+from fastapi.responses import FileResponse
 
 from ...lib.command import execute as execute_command, LOGGER
-from ...lib.netplan import set_dhcp4, persist_interfaces, restore_interfaces
+from ...lib.netplan import set_dhcp4, persist_interfaces, restore_interfaces, PERSIST_PATH
 
 
 class AddressFamily (str, Enum):
@@ -219,6 +220,10 @@ async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
         ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
         LOGGER
     )
+
+@router.get("/network/interfaces/persist/file")
+async def get_persisted_netifs_raw():
+    return FileResponse(PERSIST_PATH)
 
 @router.post("/network/interfaces/persist")
 async def persist_netifs() -> None:

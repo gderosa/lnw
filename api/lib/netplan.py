@@ -49,8 +49,7 @@ def _init_files():
         with open(RUNTIME_PATH, 'w') as f:
             yaml.dump(YAML_DATA_BLANK, f)
 
-
-def _load() -> dict:
+def _load() -> dict:  # TODO: rename _load_runtime()?
     with open(RUNTIME_PATH) as f:
         return yaml.safe_load(f)
 
