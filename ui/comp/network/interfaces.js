@@ -10,6 +10,7 @@ class NetIfCheckbox extends HTMLElement {
         this.checkbox = $new('input');
         this.checkbox.setAttribute('type', 'checkbox');
         this.checkbox.addEventListener('change', this.update.bind(this));  // https://stackoverflow.com/a/19507086
+        this.checkbox.addEventListener('change', this.schedule.bind(this));
         this.appendChild(this.checkbox);
         await this.refresh();
     }
@@ -23,6 +24,10 @@ class NetIfCheckbox extends HTMLElement {
     }
     async refreshInterface() {
         return await this.networkInterfaces.refreshInterface(this.ifName);
+    }
+    schedule() {
+        // Some network changes happen after some time, schedule a refresh
+        setTimeout(this.refreshInterface.bind(this), 3000);
     }
     async update(event) {
         // NotImplemented
@@ -101,13 +106,13 @@ class IPAddrControl extends HTMLElement {
         this.networkInterfacesId = (this.getAttribute('network-interfaces-id') || '').trim();
 
         this.form = $new('form');
-        this.form.method = 'POST';  // "preserve" address bar
         this.button = $new('button');
         this.button.classList.add('icon');
 
         if (this.fullAddress) {
             this.form.textContent = `${this.fullAddress} (${this.scope})`;
             this.form.appendChild(this.button);
+            this.form.method = 'DELETE';  // purely "informative"
             this.button.textContent = '-';
             if (this.scope === 'global') {
                 this.form.addEventListener('submit', async (event) => {
@@ -130,6 +135,7 @@ class IPAddrControl extends HTMLElement {
                 this.button.setAttribute('disabled', true);
             }
         } else {
+            this.form.method = 'POST';  // purely "informative"
             this.input = $new('input');
             this.input.type = 'text';
             this.input.name = `ip-address-add[${this.ifName}]`;  // enable history/autofill in browsers, unique enough

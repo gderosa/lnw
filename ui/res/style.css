@@ -1,3 +1,11 @@
+:root {
+    --host-hue: 180deg;
+    --host-fg: hwb(var(--host-hue) 30% 35%);
+    --host-mg: hwb(var(--host-hue) 35% 35%);
+    --host-tb: hwb(var(--host-hue) 86% 6%);
+    --host-bg: hwb(var(--host-hue) 96% 2%);
+  }
+
 /* Layout */
 
 body {
@@ -40,7 +48,7 @@ side-menu li.no-menu-children {
 }
 
 side-menu a {
-    color: #68a;
+    color: var(--host-fg);
     text-decoration: none;
     font-weight: bold;
 }
@@ -49,11 +57,24 @@ side-menu a:hover {
     text-decoration: underline;
 }
 
+.system-info-badge {
+    font-weight: bold;
+    color: #444;
+    border-top: 1.8px var(--host-fg) solid;
+    padding: 1em;
+    margin: 1em;
+}
+
 main-content {
     display: flex;
     flex-direction: column;
     flex-grow: 3;
     margin-top: 1ex;
+}
+
+h3 {
+    margin-top: 2em;
+    margin-bottom: 1ex;
 }
 
 /* Tables */
@@ -66,8 +87,10 @@ table th {
 table td {
     font-family: monospace;
     text-align: right;
-    background-color: #d4e2ee;
+    background-color: var(--host-bg);
     padding: 4px;
+    border-radius: 2px;
+    border: 1px var(--host-tb) solid;
 }
 
 table td.symbol, table td.singlecheck {
@@ -105,6 +128,7 @@ table td ul li {
 
 input[type="checkbox"] {
     margin: 3px;
+    accent-color: var(--host-mg);
 }
 
 /* Outputs */
@@ -121,4 +145,27 @@ ipaddr-control[scope="link"], ipaddr-control[scope="host"] {
 
 table tr td ul ipaddr-control input {
     width: calc(100% - 4em);
+}
+
+/* Persist */
+
+button.persist, button.restore {
+    margin: 1em 1em 1em 0;
+    width: 12em;
+    font-size: 10.3pt;
+}
+.persist details summary {
+    margin-top: 1ex;
+}
+.persist .file-name {
+    margin-bottom: 0.6em;
+    margin-top: 0.8em;
+    font-size: 10pt;
+}
+.persist pre.file-content {
+    margin-top: 0;
+    border: 2px var(--host-tb) solid;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 1.5ex 3ex 2ex 2ex;
 }

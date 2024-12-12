@@ -11,6 +11,11 @@ class SideMenu extends HTMLElement {
     connectedCallback() {
         const ul = this.constructor.makeUl(this.data);
         this.appendChild(ul);  // -- https://frontendmasters.com/blog/light-dom-only/
+
+        // TODO: make this own component
+        const systemInfoBadge = $new('div');
+        systemInfoBadge.classList.add('system-info-badge');
+        this.appendChild(systemInfoBadge);
     }
     static makeUl(items) {  // -- https://iamkate.com/code/tree-views/
         const ul = $new('ul');

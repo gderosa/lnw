@@ -4,11 +4,12 @@ import json
 import subprocess
 from functools import cached_property
 
-from fastapi import APIRouter
 from pydantic import BaseModel, Field, computed_field
+from fastapi import APIRouter
+from fastapi.responses import FileResponse, PlainTextResponse
 
 from ...lib.command import execute as execute_command, LOGGER
-from ...lib.netplan.runtime import set_dhcp4
+from ...lib.netplan import set_dhcp4, persist_interfaces, restore_interfaces, PERSIST_PATH
 
 
 class AddressFamily (str, Enum):
@@ -91,6 +92,16 @@ class NetworkInterface(BaseModel):
             subprocess.check_output(['networkctl', '--json=short', 'status', self.name]))
         return "DHCPv4Client" in networkd_data
 
+    def is_up(self):
+        return 'UP' in self.flags
+    def is_down(self):
+        return not self.is_up()
+
+    def bring(self, updown: UpDown):
+        execute_command(
+            ['sudo', 'ip', 'link', 'set', updown, 'dev', self.name],
+            LOGGER
+        )
 
 
 def get_network_interfaces() -> List[NetworkInterface]:
@@ -161,7 +172,6 @@ def set_network_interfaces(netifs: List[NetworkInterface]):
                 )
 
 
-
 router = APIRouter(
     tags=["network/interfaces"],
     prefix="/api/v1"
@@ -193,32 +203,51 @@ async def netif_ip_addr_add(name: str, addr: IPAddress) -> None:
 
 @router.post("/network/interfaces/{name}/ip/link/set/{updown}")
 async def netif_ip_link_set_updown(name: str, updown: UpDown) -> None:
-    execute_command(
-        ['sudo', 'ip', 'link', 'set', updown, 'dev', name],
-        LOGGER
-    )
+    netif = get_network_interface(name)
+    netif.bring(updown)
 
-@router.post("/network/interfaces/{name}/dhcp/set/{onoff}")
-async def netif_dhcp_set(name: str, onoff: OnOff) -> None:
-    ifname = name
+@router.post("/network/interfaces/{ifname}/dhcp/set/{onoff}")
+async def netif_dhcp_set(ifname: str, onoff: OnOff) -> None:
+    iface = get_network_interface(ifname)
+    was_down = iface.is_down()
     set_dhcp4(ifname, onoff == 'on')
+    if was_down and onoff == 'off':  # preven Netplan side effect
+        iface.bring('down')
 
 @router.delete("/network/interfaces/{name}/ip/addresses/{addr}/{prefix}")
 async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
-    # https://serverfault.com/questions/486872/remove-ip-with-ip-command-in-linux
-    # DONE: /etc/sysctl.d/lnw.conf installed via setup.sh
-    # DONE: text content: net.ipv4.conf.all.promote_secondaries=1
-    # execute_command(
-    #     ['sudo', 'sysctl', '-w', f'net.ipv4.conf.{name}.promote_secondaries=1'],
-    #     LOGGER
-    # )
     execute_command(
         ['sudo', 'ip', 'address', 'delete', f'{addr}/{str(prefix)}', 'dev', name],
         LOGGER
     )
 
-@router.post("/network/interfaces/persist")  # TODO: unfinished, remove if not finished eventually
-async def persist_netifs() -> List[NetworkInterface]:
+@router.get("/network/interfaces/persist/file/path")
+async def get_persisted_netifs_filepath():
+    return PlainTextResponse(PERSIST_PATH)
+
+@router.get("/network/interfaces/persist/file")
+async def get_persisted_netifs_raw():
+    """
+    Show the managed [Netplan](https://netplan.io/) config file, which will look like e.g.
+    ```
+    network:
+        ethernets:
+            eth0:
+                dhcp4: true
+            eth1:
+                addresses:
+                    - 1.2.3.6/24
+                    - 2.2.3.5/24
+                optional: true
+            eth2:
+                dhcp4: true
+        version: 2
+    ```
+    """
+    return FileResponse(PERSIST_PATH)
+
+@router.post("/network/interfaces/persist")
+async def persist_netifs() -> None:
     netifs = get_network_interfaces()
     persisted_netifs = []
     for netif in netifs:
@@ -228,6 +257,8 @@ async def persist_netifs() -> List[NetworkInterface]:
             persisted_addresses = netif.statically_persistable_addresses()
             netif.ip.addresses = persisted_addresses
             persisted_netifs.append(netif)
-    return persisted_netifs
+    persist_interfaces(persisted_netifs)
 
-
+@router.post("/network/interfaces/restore")
+async def restore_netifs() -> None:
+    restore_interfaces()
