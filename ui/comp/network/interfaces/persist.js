@@ -1,7 +1,5 @@
 import { $node } from "../../../lib/dom.js"
 
-
-
 class PersistControl extends HTMLElement {
     async connectedCallback() {
         this.innerHTML = `

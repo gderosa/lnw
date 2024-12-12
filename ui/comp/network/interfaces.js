@@ -135,7 +135,7 @@ class IPAddrControl extends HTMLElement {
                 this.button.setAttribute('disabled', true);
             }
         } else {
-            this.form.method = 'POST';  // purely informative
+            this.form.method = 'POST';  // purely "informative"
             this.input = $new('input');
             this.input.type = 'text';
             this.input.name = `ip-address-add[${this.ifName}]`;  // enable history/autofill in browsers, unique enough
