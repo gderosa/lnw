@@ -1,9 +1,9 @@
 :root {
     --host-hue: 180deg;
     --host-fg: hwb(var(--host-hue) 30% 35%);
-    --host-mg: hwb(var(--host-hue) 45% 50%);
+    --host-mg: hwb(var(--host-hue) 45% 42%);
     --host-tb: hwb(var(--host-hue) 86% 6%);
-    --host-bg: hwb(var(--host-hue) 94% 2%);
+    --host-bg: hwb(var(--host-hue) 96% 2%);
   }
 
 /* Layout */
