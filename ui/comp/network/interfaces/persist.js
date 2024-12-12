@@ -26,7 +26,7 @@ class PersistControl extends HTMLElement {
             await fetch('/api/v1/network/interfaces/restore', {
                 method: 'POST'
             })
-            // await $node('network-interfaces').;
+            await $node('network-interfaces').connectedCallback();
         }).bind(this))
         this.updatePersistFilePath;
         this.updatePersistFileContent();
