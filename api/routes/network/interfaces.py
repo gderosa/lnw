@@ -6,7 +6,7 @@ from functools import cached_property
 
 from pydantic import BaseModel, Field, computed_field
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 
 from ...lib.command import execute as execute_command, LOGGER
 from ...lib.netplan import set_dhcp4, persist_interfaces, restore_interfaces, PERSIST_PATH
@@ -221,23 +221,27 @@ async def netif_ip_addr_del(name: str, addr: str, prefix: int) -> None:
         LOGGER
     )
 
+@router.get("/network/interfaces/persist/file/path")
+async def get_persisted_netifs_filepath():
+    return PlainTextResponse(PERSIST_PATH)
+
 @router.get("/network/interfaces/persist/file")
 async def get_persisted_netifs_raw():
     """
-    Show the managed Netplan config file, which will look like
+    Show the managed [Netplan](https://netplan.io/) config file, which will look like e.g.
     ```
-        network:
-            ethernets:
-                eth0:
-                    dhcp4: true
-                eth1:
-                    addresses:
-                        - 1.2.3.6/24
-                        - 2.2.3.5/24
-                    optional: true
-                eth2:
-                    dhcp4: true
-            version: 2
+    network:
+        ethernets:
+            eth0:
+                dhcp4: true
+            eth1:
+                addresses:
+                    - 1.2.3.6/24
+                    - 2.2.3.5/24
+                optional: true
+            eth2:
+                dhcp4: true
+        version: 2
     ```
     """
     return FileResponse(PERSIST_PATH)
