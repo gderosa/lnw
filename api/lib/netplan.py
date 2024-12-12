@@ -5,6 +5,7 @@ import yaml
 
 from .command import execute as execute_command
 
+
 YAML_DATA_BLANK = {
     'network': {
         'version': 2,
@@ -21,6 +22,7 @@ RUNTIME_SYMLINK = f"/etc/netplan/{RUNTIME_BASENAME}"
 
 PERSIST_BASENAME = '90-lnw.yaml'
 PERSIST_PATH = f"/etc/netplan/{PERSIST_BASENAME}"
+
 
 def _init_files():
 
