@@ -5,6 +5,7 @@ import yaml
 
 from .command import execute as execute_command
 
+# https://netplan.readthedocs.io/en/stable/netplan-yaml/
 
 YAML_DATA_BLANK = {
     'network': {
@@ -82,7 +83,7 @@ def persist_interfaces(interfaces):
             for addr in iface.ip.addresses:
                 data['network']['ethernets'][iface.name]['addresses'].append(f"{addr.addr}/{addr.prefix}")
         if iface.is_down():
-            data['network']['ethernets'][iface.name]['optional'] = True
+            data['network']['ethernets'][iface.name]['activation-mode'] = 'off'
     _init_files()
     _write(data,            PERSIST_PATH)
     _write(YAML_DATA_BLANK, RUNTIME_PATH)

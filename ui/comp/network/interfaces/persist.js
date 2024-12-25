@@ -26,7 +26,7 @@ class PersistControl extends HTMLElement {
             })
             await $node('network-interfaces').connectedCallback();
         }).bind(this))
-        this.updatePersistFilePath;
+        this.updatePersistFilePath();
         this.updatePersistFileContent();
     }
     async updatePersistFilePath() {
